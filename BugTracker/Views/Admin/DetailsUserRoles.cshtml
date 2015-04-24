@@ -1,0 +1,12 @@
+﻿@model BugTracker.Models.UserRolesVM
+@{
+    ViewBag.Title = "DetailsUserRoles";
+}
+
+<h2>DetailsUserRoles</h2>
+<p>Display Name : @Model.UserName</p>
+<p>Roles assigned : </p>
+@foreach(var role in Model.Roles)
+{ 
+    <p>@role</p>
+}

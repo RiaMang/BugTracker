@@ -1,0 +1,18 @@
+﻿@model BugTracker.Models.ProjUserViewModel
+    
+@{
+    ViewBag.Title = "AssignUsers";
+}
+
+<h2>AssignUsers</h2>
+<p>
+    Name :
+    <span>@Model.Project.Name</span>
+</p>
+
+
+<form action="AssignUsers" method="Post">
+    @Html.HiddenFor(m => m.Project.Id, new { })
+    @Html.ListBox("SelectedUsers", Model.Users)
+    <input type="submit" value="Assign Users" />
+</form>

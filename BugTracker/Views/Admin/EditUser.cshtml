@@ -1,0 +1,20 @@
+﻿@model BugTracker.Models.AdminUserViewModel
+@{
+    ViewBag.Title = "EditUser";
+}
+
+<h2>EditUser</h2>
+<p>
+    Name :
+    <span>@Model.User.DisplayName</span>
+</p>
+<p>
+    Email :
+    <span>@Model.User.Email</span>
+</p>
+
+<form action="EditUser" method="Post">
+    @Html.HiddenFor(m => m.User.Id, new { })
+    @Html.ListBox("SelectedRoles", Model.Roles)
+    <input type="submit" value="Assign Roles" />
+</form>

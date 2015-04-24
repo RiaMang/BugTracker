@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Users";
+}
+@model List <BugTracker.Models.ApplicationUser>
+<h2>Users</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <table>
+            <thead>
+                <tr>
+                    <th>UserName  </th>
+                    <th>Email   </th>
+                    <th>Display Name  </th>
+                    <th>Actions   </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var user in Model)
+                {
+                    <tr>
+                        <td>@user.UserName   </td>
+                        <td>@user.Email   </td>
+                        <td>@user.DisplayName   </td>
+                        <td><a href="@Url.Action("EditUser", new { Id = user.Id})">   Edit</a></td>
+                        <td><a href="@Url.Action("DetailsUserRoles", new { Id = user.Id})">  Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
