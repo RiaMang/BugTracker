@@ -104,19 +104,22 @@ namespace BugTracker.Controllers
             }
             return View(project);
         }
+
         [Authorize (Roles="Admin,Project Manager")]
         public ActionResult AssignUsers(int projectId)
         {
             var proj = db.Projects.Find(projectId);
-            var userList = urHelper.UsersInRole("Developer");
-            
+            var userList = urHelper.UsersInRole("Developer"); //db.Users.ToList();
+
             if (User.IsInRole("Admin"))
             {
-                userList.Concat(urHelper.UsersInRole("Project Manager"));
+                var pmList = urHelper.UsersInRole("Project Manager");
+                foreach (var pm in pmList)
+                    userList.Add(pm);
             }
             
             var selected = ph.UsersInProject(projectId).Select(n => n.Id).ToArray();
-            var selectList = new MultiSelectList(userList, "Id", "DisplayName", selected);
+            var selectList = new MultiSelectList(userList, "Id", "UserName", selected);
             var model = new ProjUserViewModel
             {
                Project = proj,
@@ -133,7 +136,13 @@ namespace BugTracker.Controllers
         public ActionResult AssignUsers(ProjUserViewModel model)
         {
             var proj = db.Projects.Find(model.Project.Id);
-            foreach (var user in db.Users.ToList())
+            var userList = new List<ApplicationUser>();
+            if(User.IsInRole("Project Manager"))
+                userList = (List<ApplicationUser>)urHelper.UsersInRole("Developer");
+            else
+                userList = db.Users.ToList();
+
+            foreach (var user in userList)
             {
                 if (model.SelectedUsers.Contains(user.Id))
                     ph.AddUserToProject(user.Id, proj.Id);

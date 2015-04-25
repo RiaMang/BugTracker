@@ -1,6 +1,7 @@
 ﻿using BugTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
@@ -55,7 +56,10 @@ namespace BugTracker.Helpers
         public bool RemoveUserFromProject(string userId, int projectId)
         {
             Project proj = db.Projects.Find(projectId);
-            var delUser = new ApplicationUser { Id = userId, UserName = "temp" };
+            var delUser = db.Users.Find(userId);
+           
+            //db.Users.Attach(delUser);
+            
             proj.Users.Remove(delUser);
             db.SaveChanges();
             return (true);

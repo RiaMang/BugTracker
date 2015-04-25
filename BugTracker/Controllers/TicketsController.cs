@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Models
 {
@@ -57,10 +58,13 @@ namespace BugTracker.Models
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Description,Created,Updated,ProjectId,TicketStatusId,TicketPriorityId,TicketTypeId,OwnerUserId,AssignedToUserId")] Ticket ticket)
+        public ActionResult Create(Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                ticket.Created = System.DateTimeOffset.Now;
+                ticket.TicketStatusId = db.TicketStatuses.Single(t=>t.Name == "Open").Id;
+                ticket.OwnerUserId = User.Identity.GetUserId();
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");
