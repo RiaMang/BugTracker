@@ -3,10 +3,45 @@
     ViewBag.Title = "DetailsUserRoles";
 }
 
-<h2>DetailsUserRoles</h2>
-<p>Display Name : @Model.UserName</p>
-<p>Roles assigned : </p>
-@foreach(var role in Model.Roles)
-{ 
-    <p>@role</p>
-}
+<div class="container">
+    <h2> User Roles Details</h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <p>
+            @Html.ActionLink("Assign/Unassign Roles", "EditUser", new {Id =Model.UserId})
+        </p>
+    }
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-green margin-bottom-40">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> @Model.UserName</h3>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+
+                            <th>Roles</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => role)</td>
+                               
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--End Hover Rows-->
+</div>
+    <div>
+        @Html.ActionLink("Back to List", "Users")
+    </div>
+</div>
+

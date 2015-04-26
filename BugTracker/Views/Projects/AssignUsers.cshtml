@@ -4,7 +4,49 @@
     ViewBag.Title = "AssignUsers";
 }
 
-<h2>AssignUsers</h2>
+<div class="container">
+    <h2> Assign Users </h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-green margin-bottom-40">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> @Model.Project.Name</h3>
+                </div>
+            </div>
+            <p>
+                Name :
+                <span>@Model.Project.Name</span>
+            </p>
+
+            <form action="AssignUser" method="Post" class="form-horizontal">
+                @Html.HiddenFor(m => m.Project.Id, new { })
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        @Html.ListBox("SelectedUsers", Model.Users)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        <button type="submit" class="btn-u btn-u-green">Assign Users</button>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+        <!--End Hover Rows-->
+    </div>
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</div>
+
+
+
+
+
+@*<h2>Assign Users</h2>
 <p>
     Name :
     <span>@Model.Project.Name</span>
@@ -15,4 +57,4 @@
     @Html.HiddenFor(m => m.Project.Id, new { })
     @Html.ListBox("SelectedUsers", Model.Users)
     <input type="submit" value="Assign Users" />
-</form>
+</form>*@

@@ -22,7 +22,7 @@ namespace BugTracker.Models
 
     public class ProjUsersVM
     {
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
         public string ProjectName { get; set; }
         public IList<ApplicationUser> Users { get; set; }
     }

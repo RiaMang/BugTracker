@@ -1,26 +1,62 @@
-﻿@model BugTracker.Models.Project
+﻿@model BugTracker.Models.ProjUsersVM
 
 @{
     ViewBag.Title = "Details";
 }
+<div class="container">
+<h2>Project Details</h2>
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-green margin-bottom-40">
+            <div class="panel-heading">
+                <h3 class="panel-title"> @Html.DisplayFor(model => model.ProjectName)</h3>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
 
-<h2>Details</h2>
+                        <th>Project Users</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>
 
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectId }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = Model.ProjectId }) |
 
-    </dl>
+                                @Html.ActionLink("Assign", "AssignUsers", new { projectId = Model.ProjectId })
+                            </th>
+                        }
+                        else if (User.IsInRole("Project Manager"))
+                        {
+                            <th>
+                                @Html.ActionLink("Assign", "AssignUsers", new { projectId = Model.ProjectId })
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Users)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
+                            
+                            
+                            <td></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--End Hover Rows-->
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</div>
+

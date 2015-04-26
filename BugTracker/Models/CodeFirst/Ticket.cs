@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace BugTracker.Models
 {
@@ -19,6 +20,7 @@ namespace BugTracker.Models
         [Required]
         public string Title { get; set; }
         [Required]
+        [AllowHtml]
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }

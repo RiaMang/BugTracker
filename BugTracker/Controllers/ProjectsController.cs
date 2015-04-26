@@ -44,7 +44,12 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
-            return View(project);
+            ProjUsersVM projUsersVM = new ProjUsersVM();
+            projUsersVM.ProjectId = project.Id;
+            projUsersVM.ProjectName = project.Name;
+            projUsersVM.Users = project.Users.ToList();
+
+            return View(projUsersVM);
         }
 
         // GET: Projects/Create
@@ -115,11 +120,12 @@ namespace BugTracker.Controllers
             {
                 var pmList = urHelper.UsersInRole("Project Manager");
                 foreach (var pm in pmList)
-                    userList.Add(pm);
+                    if(!userList.Contains(pm))
+                        userList.Add(pm);
             }
             
             var selected = ph.UsersInProject(projectId).Select(n => n.Id).ToArray();
-            var selectList = new MultiSelectList(userList, "Id", "UserName", selected);
+            var selectList = new MultiSelectList(userList, "Id", "DisplayName", selected);
             var model = new ProjUserViewModel
             {
                Project = proj,
