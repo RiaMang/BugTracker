@@ -13,6 +13,9 @@ namespace BugTracker.Models
         public ApplicationUser()
         {
             this.Projects = new HashSet<Project>();
+            //this.TicketsOwned = new HashSet<TicketsOwned>();
+            //this.TicketsAssigned = new HashSet<TicketsAssigned>();
+
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }

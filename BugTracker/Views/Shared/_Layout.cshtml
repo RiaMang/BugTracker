@@ -25,6 +25,9 @@
     <!-- CSS Theme -->
     <link rel="stylesheet" href="~/assets/css/themes/default.css" id="style_color">
 
+    <!----PagedList-->
+    <link rel="stylesheet" href="~/Content/PagedList.css" type="text/css"/>
+
     <!-- CSS Customization -->
     <link rel="stylesheet" href="~/assets/css/custom.css">
     @Styles.Render("~/Content/css")
@@ -83,9 +86,7 @@
                             <span class="sr-only">Toggle navigation</span>
                             <span class="fa fa-bars"></span>
                         </button>
-                        <a class="navbar-brand" href="index.html">
-                            <img id="logo-header" src="~/assets/img/logo1-default.png" alt="Logo">
-                        </a>
+                        <h2>Issue Tracker</h2>
                     </div>
 
                     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -93,24 +94,23 @@
                         <ul class="nav navbar-nav">
                             <!-- Home -->
                             <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                                                       
+
                             <!-- End Home -->
-                            @if(User.IsInRole("Admin"))
-                            { 
-                            <li>@Html.ActionLink("Users", "Users", "Admin")</li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li>@Html.ActionLink("Users", "Users", "Admin")</li>
                             }
                             <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
-                            @if(User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
                             {
-                            <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
+                                <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
                             }
                             <!-- Pages -->
 
                             <li class="dropdown">
-                                
+
                                 <ul class="dropdown-menu">
                                     <!-- About Pages -->
-                                    
                                     <!-- End About Pages -->
                                     <!-- Job Pages -->
                                     <li class="dropdown-submenu">
@@ -443,8 +443,8 @@
                             </li>
                             <!-- End Blog -->
                             <!-- Contacts -->
-                           <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                            
+                            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+
                             <!-- End Contacts -->
                             <!-- Search Block -->
                             <li>
@@ -466,26 +466,23 @@
             <!-- End Navbar -->
         </div>
         <!--=== End Header ===-->
-     
         @*<li>@Html.ActionLink("Home", "Index", "Home")</li>
-        <li>@Html.ActionLink("About", "About", "Home")</li>
-        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-        </ul>*@
-        
-    
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-       
-    </div>
+            <li>@Html.ActionLink("About", "About", "Home")</li>
+            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+            </ul>*@
 
+
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+
+        </div>
+    </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     <!-- JS Global Compulsory -->
-    <script type="text/javascript" src="~/assets/plugins/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="~/assets/plugins/jquery-migrate-1.2.1.min.js"></script>
-    <script type="text/javascript" src="~/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
     <!-- JS Implementing Plugins -->
     <script type="text/javascript" src="~/assets/plugins/back-to-top.js"></script>
     <script type="text/javascript" src="~/assets/plugins/flexslider/jquery.flexslider-min.js"></script>

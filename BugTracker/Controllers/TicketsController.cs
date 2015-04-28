@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using PagedList;
+using PagedList.Mvc;
 
 namespace BugTracker.Models
 {
@@ -17,10 +19,11 @@ namespace BugTracker.Models
 
         // GET: Tickets
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(int ? page)
         {
             var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(tickets.ToList());
+            return View(tickets.ToList().OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
+           
         }
 
         // GET: Tickets/Details/5

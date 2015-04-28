@@ -17,7 +17,7 @@ namespace BugTracker.Models
             return manager.IsInRole(userId, roleName);
         }
 
-        public IList<string> ListUserRoles(string userId)
+        public ICollection<string> ListUserRoles(string userId)
         {
             return manager.GetRoles(userId);
         }
@@ -33,7 +33,7 @@ namespace BugTracker.Models
             return result.Succeeded;
         }
 
-        public IList<ApplicationUser> UsersInRole(string roleName)
+        public ICollection<ApplicationUser> UsersInRole(string roleName)
         {
             var resultList = new List<ApplicationUser>();
             //ApplicationUser u = new ApplicationUser();
@@ -48,7 +48,7 @@ namespace BugTracker.Models
             return resultList;
         }
 
-        public IList<ApplicationUser> UsersNotInRole(string roleName)
+        public ICollection<ApplicationUser> UsersNotInRole(string roleName)
         {
             var resultList = new List<ApplicationUser>();
             var List = manager.Users.ToList();

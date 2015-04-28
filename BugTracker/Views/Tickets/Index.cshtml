@@ -1,4 +1,7 @@
-﻿@model IEnumerable<BugTracker.Models.Ticket>
+﻿@using PagedList
+@using PagedList.Mvc
+
+@model PagedList<BugTracker.Models.Ticket>
 
 @{
     ViewBag.Title = "Index";
@@ -20,34 +23,34 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.AssignedToUser)
+                                AssignedToUser
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.OwnerUser)
+                                OwnerUser
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Project)
+                                Project    @*@Html.DisplayNameFor(model => model.Project)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TicketPriority)
+                                Priority  @*@Html.DisplayNameFor(model => model.TicketPriority)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TicketStatus)
+                                Status      @*@Html.DisplayNameFor(model => model.TicketStatus)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TicketType)
+                                TicketType   @*@Html.DisplayNameFor(model => model.TicketType)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Title)
+                                Title     @*@Html.DisplayNameFor(model => model.Title)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Description)
+                                Description        @*@Html.DisplayNameFor(model => model.Description)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Created)
+                                Created    @*@Html.DisplayNameFor(model => model.Created)*@
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Updated)
+                                Updated   @*@Html.DisplayNameFor(model => model.Updated)*@
                             </th>
                             <th></th>
                         </tr>
@@ -78,7 +81,7 @@
                                     @Html.DisplayFor(modelItem => item.Title)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
+                                    @Html.Raw(item.Description)
                                 </td>
                                 <td>
                                     @item.Created.DateTime.ToLongDateString())
@@ -103,6 +106,9 @@
             </div>
         </div>
         <!--End Hover Rows-->
+        <!--------- Pager-->
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @Html.PagedListPager(Model, p => Url.Action("Index", new { page = p }))
     </div>
 </div>
 

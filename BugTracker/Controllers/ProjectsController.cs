@@ -120,17 +120,21 @@ namespace BugTracker.Controllers
             {
                 var pmList = urHelper.UsersInRole("Project Manager");
                 foreach (var pm in pmList)
+                { 
                     if(!userList.Contains(pm))
+                    {
                         userList.Add(pm);
+                    }  
+                }
             }
             
-            var selected = ph.UsersInProject(projectId).Select(n => n.Id).ToArray();
+            var selected = ph.UsersOnProject(projectId).Select(n => n.Id).ToArray();
             var selectList = new MultiSelectList(userList, "Id", "DisplayName", selected);
             var model = new ProjUserViewModel
             {
                Project = proj,
-                Users = selectList,
-                SelectedUsers = selected
+                Users = selectList
+                
             };
 
             return View(model);
@@ -139,24 +143,40 @@ namespace BugTracker.Controllers
 
         [Authorize(Roles = "Admin,Project Manager")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult AssignUsers(ProjUserViewModel model)
         {
-            var proj = db.Projects.Find(model.Project.Id);
-            var userList = new List<ApplicationUser>();
-            if(User.IsInRole("Project Manager"))
-                userList = (List<ApplicationUser>)urHelper.UsersInRole("Developer");
-            else
-                userList = db.Users.ToList();
-
-            foreach (var user in userList)
+            if (ModelState.IsValid)
             {
-                if (model.SelectedUsers.Contains(user.Id))
-                    ph.AddUserToProject(user.Id, proj.Id);
-                else
-                    ph.RemoveUserFromProject(user.Id, proj.Id);
-            }
+                if (model.SelectedUsers != null)
+                {
+                    var proj = db.Projects.Find(model.Project.Id);
+                    var userList = new List<ApplicationUser>();
+                    if (User.IsInRole("Project Manager"))
+                        userList = (List<ApplicationUser>)urHelper.UsersInRole("Developer");
+                    else
+                        userList = db.Users.ToList();
 
-            return RedirectToAction("Index");
+                    foreach (var user in userList)
+                    {
+                        if (model.SelectedUsers.Contains(user.Id))
+                        {
+                            ph.AddUserToProject(user.Id, proj.Id);
+                        }
+                        else
+                        { 
+                            ph.RemoveUserFromProject(user.Id, proj.Id);
+                        }
+                    }
+                }
+                else
+                {
+                    // display error.
+                }
+
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("AssignUsers",model.Project.Id);
         }
 
         // GET: Projects/Delete/5

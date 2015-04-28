@@ -1,4 +1,6 @@
 ﻿using BugTracker.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,14 +15,14 @@ namespace BugTracker.Helpers
 
         ApplicationDbContext db = new ApplicationDbContext();
 
-        public bool IsUserInProject(string userId, int projectId)
+        public bool IsUserOnProject(string userId, int projectId)
         {
             var project = db.Projects.Find(projectId);
             var flag = project.Users.Any(u => u.Id == userId);
             return (flag);
         }
 
-        public IList<Project> ListUserProjects(string userId)
+        public ICollection<Project> ListUserProjects(string userId)
         {
             ApplicationUser user = db.Users.Find(userId);
 
@@ -28,56 +30,105 @@ namespace BugTracker.Helpers
             return (projects);
         }
 
-        public bool AddUserToProject(string userId, int projectId)
+        public void AddUserToProject(string userId, int projectId)
         {
-            try
+            if (!IsUserOnProject(userId, projectId))
             {
                 Project proj = db.Projects.Find(projectId);
-                var newUser = new ApplicationUser { Id = userId, UserName="temp" };
+                var newUser = new ApplicationUser { Id = userId, UserName = "temp" };
                 db.Users.Attach(newUser);
                 db.Entry(newUser).State = System.Data.Entity.EntityState.Unchanged;
                 proj.Users.Add(newUser);
-                
+
                 db.SaveChanges();
             }
-            catch (DbEntityValidationException e)
-            {
-                
-                return false;
-            }
-            catch(Exception e)
-            {
-                return false;
-            }
+
+            //if (!IsOnProject(userId, projectId))
+            //{
+            //    var project = db.Projects.Find(projectId);
+            //    project.Users.Add(db.Users.Find(userId));
+            //    db.Entry(project).State = EntityState.Modified; // just saves this obj instance.
+            //    db.SaveChanges();
+            //}
             
-            return (true);
         }
 
-        public bool RemoveUserFromProject(string userId, int projectId)
+        public void RemoveUserFromProject(string userId, int projectId)
         {
+            if(IsUserOnProject(userId, projectId))
+            { 
             Project proj = db.Projects.Find(projectId);
             var delUser = db.Users.Find(userId);
-           
-            //db.Users.Attach(delUser);
-            
+                   
             proj.Users.Remove(delUser);
+            db.Entry(proj).State = EntityState.Modified; // just saves this obj instance.
             db.SaveChanges();
-            return (true);
+            }
         }
 
-        public IList<ApplicationUser> UsersInProject(int projectId)
+        public ICollection<ApplicationUser> UsersOnProject(int projectId)
         {
-            var project = db.Projects.Find(projectId);
-            IList<ApplicationUser> resultList = project.Users.ToList();
-            return (resultList);
+            return db.Projects.Find(projectId).Users;
         }
 
-        public IList<ApplicationUser> UsersNotInProject(int projectId)
+        public ICollection<ApplicationUser> UsersNotOnProject(int projectId)
         {
-            var project = db.Projects.Find(projectId);
-            IList<ApplicationUser> inList = project.Users.ToList();
-            IList<ApplicationUser> resultList = (IList<ApplicationUser>)db.Users.Except(inList);
-            return (resultList);
+            return db.Users.Where(u => u.Projects.All(p => p.Id != projectId)).ToList();
+        }
+    }
+
+    // Duplicate >>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    public class UserProjectsHelper
+    {
+        private UserManager<ApplicationUser> manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+        private ApplicationDbContext db= new ApplicationDbContext();
+
+        public bool IsOnProject(string userId, int projectId)
+        {
+       
+        if(db.Projects.Find(projectId).Users.Contains(db.Users.Find(userId)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void AddUserToProject(string userId, int projectId)
+        {
+            if(!IsOnProject(userId, projectId))
+            {
+                var project = db.Projects.Find(projectId);
+                    project.Users.Add(db.Users.Find(userId));
+                db.Entry(project).State = EntityState.Modified; // just saves this obj instance.
+                db.SaveChanges();
+            }
+        }
+
+        public void RemoveUserFromProject(string userId, int projectId)
+        {
+            if (IsOnProject(userId, projectId))
+            {
+                var project = db.Projects.Find(projectId);
+                project.Users.Remove(db.Users.Find(userId));
+                db.Entry(project).State = EntityState.Modified; // just saves this obj instance.
+                db.SaveChanges();
+            }
+        }
+
+        public ICollection<ApplicationUser> ListUsersOnProject(int projectId)
+        {
+            return db.Projects.Find(projectId).Users;
+        }
+
+        public ICollection<ApplicationUser> ListProjectsForUser(string userId)
+        {
+            return (ICollection<ApplicationUser>) db.Users.Find(userId).Projects;
+        }
+
+        public ICollection<ApplicationUser> ListUsersNotOnProject(int projectId)
+        {
+            return db.Users.Where(u=> u.Projects.All(p => p.Id != projectId)).ToList();
         }
     }
 }

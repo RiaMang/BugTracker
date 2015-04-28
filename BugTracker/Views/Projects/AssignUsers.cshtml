@@ -19,11 +19,13 @@
                 <span>@Model.Project.Name</span>
             </p>
 
-            <form action="AssignUser" method="Post" class="form-horizontal">
+            <form action="AssignUsers" method="Post" class="form-horizontal">
+                @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.Project.Id, new { })
+                @Html.HiddenFor(m => m.Project.Name, new { })
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
-                        @Html.ListBox("SelectedUsers", Model.Users)
+                        @Html.ListBoxFor(m => m.SelectedUsers, Model.Users as MultiSelectList)
                     </div>
                 </div>
                 <div class="form-group">
