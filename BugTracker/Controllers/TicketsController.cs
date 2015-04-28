@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using PagedList;
 using PagedList.Mvc;
+using BugTracker.Helpers;
 
 namespace BugTracker.Models
 {
@@ -19,10 +20,38 @@ namespace BugTracker.Models
 
         // GET: Tickets
         [Authorize]
-        public ActionResult Index(int ? page)
+        public ActionResult Index(int ? page, string role)
         {
-            var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(tickets.ToList().OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
+            //var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+
+            string userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId); //check navigational properties - find looks in memory first for user if not, takes from database
+            var tickets = new List<Ticket>();
+            if (role == "dev")
+            {
+                ViewBag.Dev = "dev";
+                tickets = db.Tickets.Where(t => t.AssignedToUserId == userId).ToList();
+            }
+            
+            else if(User.IsInRole("Admin"))
+            {
+                tickets = db.Tickets.ToList();
+            }
+            else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            {
+                //tickets=(List<Ticket>)user.ListTicketsForUser().Where(u=>u.Id == u.Id);
+                tickets = user.Projects.SelectMany(p => p.Tickets).ToList();
+                
+            } 
+            else if (User.IsInRole("Submitter"))
+            {
+                tickets = db.Tickets.Where(t => t.OwnerUserId == userId).ToList();
+            }
+            //db.Tickets.Include(t => t.AssignedToUser)
+
+            return View(tickets.OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
+
+            //return View(tickets.ToList().OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
            
         }
 

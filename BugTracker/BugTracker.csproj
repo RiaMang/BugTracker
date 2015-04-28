@@ -182,6 +182,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\ProjectUsersController.cs" />
+    <Compile Include="Helpers\HelperExtensions.cs" />
     <Compile Include="Helpers\ProjectsHelper.cs" />
     <Compile Include="Helpers\UserRolesHelper.cs" />
     <Compile Include="Global.asax.cs">
@@ -209,6 +210,7 @@
   <ItemGroup>
     <Content Include="assets\css\app.css" />
     <Content Include="assets\css\custom.css" />
+    <Content Include="assets\css\jquery.dataTables.css" />
     <Content Include="assets\css\pages\blog.css" />
     <Content Include="assets\css\pages\blog_magazine.css" />
     <Content Include="assets\css\pages\feature_timeline1.css" />

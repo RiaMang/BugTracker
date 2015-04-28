@@ -14,7 +14,7 @@ namespace BugTracker.Models
         {
             this.Projects = new HashSet<Project>();
             //this.TicketsOwned = new HashSet<TicketsOwned>();
-            //this.TicketsAssigned = new HashSet<TicketsAssigned>();
+            this.AssignedTickets = new HashSet<Ticket>();
 
         }
         public string FirstName { get; set; }
@@ -30,6 +30,8 @@ namespace BugTracker.Models
             return userIdentity;
         }
         public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Ticket> AssignedTickets { get; set; }
+
 
     }
 

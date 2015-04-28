@@ -14,6 +14,12 @@ namespace BugTracker.Models
             this.TicketComments = new HashSet<TicketComment>();
             this.TicketAttachments = new HashSet<TicketAttachment>();
             this.TicketHistories = new HashSet<TicketHistory>();
+            //this.TicketPriority = new TicketPriority();
+            //this.TicketStatus = new TicketStatus();
+            //this.TicketType = new TicketType();
+            //this.AssignedToUser = new ApplicationUser();
+            //this.OwnerUser = new ApplicationUser();
+            //this.Project = new Project();
         }
         
         public int Id {get; set;}

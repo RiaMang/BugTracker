@@ -114,20 +114,30 @@ namespace BugTracker.Controllers
         public ActionResult AssignUsers(int projectId)
         {
             var proj = db.Projects.Find(projectId);
-            var userList = urHelper.UsersInRole("Developer"); //db.Users.ToList();
-
+             //db.Users.ToList();
+            var userList = new List<ApplicationUser>();
+            userList = (List<ApplicationUser>)urHelper.UsersInRole("Developer");
             if (User.IsInRole("Admin"))
             {
+                //userList = db.Users.ToList();
                 var pmList = urHelper.UsersInRole("Project Manager");
                 foreach (var pm in pmList)
-                { 
-                    if(!userList.Contains(pm))
+                {
+                    if (!userList.Contains(pm))
                     {
                         userList.Add(pm);
-                    }  
+                    }
+                }
+                var adList = urHelper.UsersInRole("Admin");
+                foreach (var ad in adList)
+                {
+                    if (!userList.Contains(ad))
+                    {
+                        userList.Add(ad);
+                    }
                 }
             }
-            
+                        
             var selected = ph.UsersOnProject(projectId).Select(n => n.Id).ToArray();
             var selectList = new MultiSelectList(userList, "Id", "DisplayName", selected);
             var model = new ProjUserViewModel
@@ -153,9 +163,9 @@ namespace BugTracker.Controllers
                     var proj = db.Projects.Find(model.Project.Id);
                     var userList = new List<ApplicationUser>();
                     if (User.IsInRole("Project Manager"))
-                        userList = (List<ApplicationUser>)urHelper.UsersInRole("Developer");
+                        userList = urHelper.UsersInRole("Developer").ToList();
                     else
-                        userList = db.Users.ToList();
+                        userList = urHelper.UsersNotInRole("Submitter").ToList();
 
                     foreach (var user in userList)
                     {

@@ -2,55 +2,64 @@
 @using PagedList.Mvc
 
 @model PagedList<BugTracker.Models.Ticket>
-
+<link rel="stylesheet" type=" text/css" href="~/assets/css/jquery.dataTables.css" />
 @{
     ViewBag.Title = "Index";
 }
 
 <div class="container">
     <h2> Issues Index </h2>
-       <p>
+    <div class="row">
+        <div class="col-md-2">
             @Html.ActionLink("Create New", "Create")
-        </p>
-    
+        </div>
+        @if(User.IsInRole("Developer"))
+        {
+        <div class="col-md-2">
+            @Html.ActionLink("My Tickets", "Index", new { role="dev"})<span> | </span>
+            @Html.ActionLink("All Tickets", "Index")
+        </div>
+        }
+        
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-green margin-bottom-40">
                 <div class="panel-heading">
                     <h3 class="panel-title"> Issues</h3>
                 </div>
-                <table class="table table-hover">
+                <table id="ticket" class="display" cellspacing="0">
                     <thead>
                         <tr>
                             <th>
-                                AssignedToUser
+                                AssignedTo @*@Html.ActionLink("AssignedToUser", "Index", new {sort = "Assigned" })*@
                             </th>
                             <th>
-                                OwnerUser
+                                Owner @*@Html.ActionLink("OwnerUser", "Index", new { sort = "Owner" })*@
                             </th>
                             <th>
-                                Project    @*@Html.DisplayNameFor(model => model.Project)*@
+                                Project @*@Html.ActionLink("Project", "Index", new { sort = "Project" })*@
                             </th>
                             <th>
-                                Priority  @*@Html.DisplayNameFor(model => model.TicketPriority)*@
+                                Prioity @*@Html.ActionLink("Priority", "Index", new { sort = "Priority" })*@
                             </th>
                             <th>
-                                Status      @*@Html.DisplayNameFor(model => model.TicketStatus)*@
+                                Status @*@Html.ActionLink("Status", "Index", new { sort = "Status" })*@
                             </th>
                             <th>
-                                TicketType   @*@Html.DisplayNameFor(model => model.TicketType)*@
+                                Type @*@Html.ActionLink("Type", "Index", new { sort = "Type" })*@
                             </th>
                             <th>
-                                Title     @*@Html.DisplayNameFor(model => model.Title)*@
+                                Title @*@Html.ActionLink("Title", "Index", new { sort = "Title" })*@
                             </th>
                             <th>
-                                Description        @*@Html.DisplayNameFor(model => model.Description)*@
+                                Decscription @*@Html.ActionLink("Desc", "Index", new { sort = "Desc" })*@
                             </th>
                             <th>
-                                Created    @*@Html.DisplayNameFor(model => model.Created)*@
+                                Created @*@Html.ActionLink("Created", "Index", new { sort = "Created" })*@
                             </th>
                             <th>
-                                Updated   @*@Html.DisplayNameFor(model => model.Updated)*@
+                                Updated @*@Html.ActionLink("Updated", "Index", new { sort = "Updated" })*@
                             </th>
                             <th></th>
                         </tr>
@@ -94,9 +103,12 @@
 
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) 
-                                    
+                                    @if(User.IsInRole("Admin") || User.IsInRole("Project Manager") || ViewBag.Dev == "dev")
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
+                                    }
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id })
+
                                 </td>
                             </tr>
                         }
@@ -112,7 +124,14 @@
     </div>
 </div>
 
+@section scripts {
 
-
+<script type="text/javascript" src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#ticket').DataTable();
+    });
+</script>
+}
 
 
