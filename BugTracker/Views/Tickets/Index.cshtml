@@ -1,7 +1,7 @@
-﻿@using PagedList
-@using PagedList.Mvc
+﻿@*@using PagedList
+@using PagedList.Mvc*@
 
-@model PagedList<BugTracker.Models.Ticket>
+@model List<BugTracker.Models.Ticket>
 <link rel="stylesheet" type=" text/css" href="~/assets/css/jquery.dataTables.css" />
 @{
     ViewBag.Title = "Index";
@@ -13,13 +13,7 @@
         <div class="col-md-2">
             @Html.ActionLink("Create New", "Create")
         </div>
-        @if(User.IsInRole("Developer"))
-        {
-        <div class="col-md-2">
-            @Html.ActionLink("My Tickets", "Index", new { role="dev"})<span> | </span>
-            @Html.ActionLink("All Tickets", "Index")
-        </div>
-        }
+        
         
     </div>
     <div class="row">
@@ -28,44 +22,55 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"> Issues</h3>
                 </div>
+                @if (User.IsInRole("Developer"))
+                {
+                    <div class="col-lg-offset-4">
+                        <label>Show My Tickets Only: <input type="checkbox" id="myTickets" value="off" /></label>
+                    </div>
+                }
                 <table id="ticket" class="display" cellspacing="0">
                     <thead>
                         <tr>
                             <th>
-                                AssignedTo @*@Html.ActionLink("AssignedToUser", "Index", new {sort = "Assigned" })*@
+                                Id
                             </th>
                             <th>
-                                Owner @*@Html.ActionLink("OwnerUser", "Index", new { sort = "Owner" })*@
+                                Title 
                             </th>
                             <th>
-                                Project @*@Html.ActionLink("Project", "Index", new { sort = "Project" })*@
+                                Description
                             </th>
                             <th>
-                                Prioity @*@Html.ActionLink("Priority", "Index", new { sort = "Priority" })*@
+                                Created 
                             </th>
                             <th>
-                                Status @*@Html.ActionLink("Status", "Index", new { sort = "Status" })*@
+                                Updated
                             </th>
                             <th>
-                                Type @*@Html.ActionLink("Type", "Index", new { sort = "Type" })*@
+                                AssignedTo 
                             </th>
                             <th>
-                                Title @*@Html.ActionLink("Title", "Index", new { sort = "Title" })*@
+                                Owner 
                             </th>
                             <th>
-                                Decscription @*@Html.ActionLink("Desc", "Index", new { sort = "Desc" })*@
+                                Project 
                             </th>
                             <th>
-                                Created @*@Html.ActionLink("Created", "Index", new { sort = "Created" })*@
+                                Status 
                             </th>
                             <th>
-                                Updated @*@Html.ActionLink("Updated", "Index", new { sort = "Updated" })*@
+                                Priority
                             </th>
-                            <th></th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Link
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @*@foreach (var item in Model)
                         {
                             <tr>
                                 <td>
@@ -87,13 +92,12 @@
                                     @Html.DisplayFor(modelItem => item.TicketType.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Title)
+                                    <span style="cursor:pointer;" data-toggle="popover" data-html="true" title="@item.Title" data-content="@Html.Raw(item.Description)">
+                                        @item.Title
+                                    </span> 
                                 </td>
                                 <td>
-                                    @Html.Raw(item.Description)
-                                </td>
-                                <td>
-                                    @item.Created.DateTime.ToLongDateString())
+                                    @item.Created.DateTime.ToLongDateString()
                                 </td>
                                 <td>
                                     @if (item.Updated != null)
@@ -111,7 +115,9 @@
 
                                 </td>
                             </tr>
-                        }
+                        }*@
+                        
+
 
                     </tbody>
                 </table>
@@ -119,8 +125,8 @@
         </div>
         <!--End Hover Rows-->
         <!--------- Pager-->
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-        @Html.PagedListPager(Model, p => Url.Action("Index", new { page = p }))
+        @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @Html.PagedListPager(Model, p => Url.Action("Index", new { page = p }))*@
     </div>
 </div>
 
@@ -129,7 +135,66 @@
 <script type="text/javascript" src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#ticket').DataTable();
+       
+        $('[data-toggle="popover"]').popover()
+
+        function formatDate(obj) {
+            if (obj == null)
+                return null;
+            var dx = new Date(parseInt(obj.substr(6)));
+            var dd = dx.getDate();
+            var mm = dx.getMonth() + 1;
+            var yy = dx.getFullYear();
+
+            if(dd<=9)
+            {
+                dd = "0" + dd;
+            }
+            if (mm <= 9) {
+                mm = "0" + mm;
+            }
+            return mm + "." + dd + "." + yy;
+        }
+
+
+        $('#ticket').DataTable({
+            "processng": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "/Tickets/GetTickets",
+                "type": "Post",
+                "data": function (d) {
+                    d.myTickets = $('#myTickets').is(':checked');
+                    // d.custom = $('#myInput').val();
+                    // etc
+                }
+            },
+            "columns": [
+                { "data": "Id", "visible": false },
+                { "data": "Title" },
+                { "data": "Description" },
+                {
+                    "data": "Created",
+                    "render":formatDate
+                },
+                {
+                    "data": "Updated",
+                    "render": formatDate
+                },
+                { "data": "AssignedToUser" },
+                { "data": "OwnerUser" },
+                { "data": "Project" },
+                { "data": "TicketStatus" },
+                { "data": "TicketPriority" },
+                { "data": "TicketType" },
+                { "data": "link"},
+
+            ]
+        });
+
+        $('#myTickets').change(function () {
+            $('#ticket').dataTable().api().draw();
+        })
     });
 </script>
 }

@@ -18,12 +18,17 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private ProjectsHelper ph = new ProjectsHelper();
         private UserRolesHelper urHelper = new UserRolesHelper();
+
         // GET: Projects
         [Authorize (Roles="Admin,Project Manager,Developer")]
         public ActionResult Index()
         {
             
-            if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            if(User.IsInRole("Admin"))
+            {
+                return View(db.Projects.ToList());
+            } 
+            else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
             {
                 
                 return View( db.Users.Find(User.Identity.GetUserId()).Projects.ToList() );
@@ -53,7 +58,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Project Manager")]
         public ActionResult Create()
         {
             return View();
@@ -63,7 +68,7 @@ namespace BugTracker.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Project Manager")]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name")] Project project)
         {

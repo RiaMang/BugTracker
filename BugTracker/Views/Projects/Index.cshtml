@@ -3,7 +3,7 @@
 
 <div class="container">
     <h2> Project Index </h2>
-    @if (User.IsInRole("Admin"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
     {
         <p>
             @Html.ActionLink("Create New", "Create")

@@ -178,6 +178,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CommAttachController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
@@ -191,6 +192,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminUserViewModel.cs" />
+    <Compile Include="Models\CodeFirst\Notification.cs" />
+    <Compile Include="Models\TicketViewModel.cs" />
     <Compile Include="Models\CodeFirst\Project.cs" />
     <Compile Include="Models\CodeFirst\TicketAttachment.cs" />
     <Compile Include="Models\CodeFirst\TicketComment.cs" />
@@ -204,6 +207,15 @@
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Models\ProjectUsersViewModel.cs" />
     <Compile Include="Models\ProjUserViewModel.cs" />
+    <Compile Include="MVC Datatables\Column.cs" />
+    <Compile Include="MVC Datatables\ColumnCollection.cs" />
+    <Compile Include="MVC Datatables\DataTablesBinder.cs" />
+    <Compile Include="MVC Datatables\DataTablesJsonBinder.cs" />
+    <Compile Include="MVC Datatables\DataTablesResponse.cs" />
+    <Compile Include="MVC Datatables\DefaultDataTablesRequest.cs" />
+    <Compile Include="MVC Datatables\IDataTablesRequest.cs" />
+    <Compile Include="MVC Datatables\NameValueCollectionExtensions.cs" />
+    <Compile Include="MVC Datatables\Search.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -1297,6 +1309,8 @@
     <Content Include="assets\plugins\vector-map\tests\index.html" />
     <Content Include="assets\plugins\vector-map\tests\markers.html" />
     <Content Include="assets\plugins\vector-map\tests\reverse-projection.html" />
+    <Content Include="Content\bootstrap-select\bootstrap-select.css" />
+    <Content Include="Content\bootstrap-select\bootstrap-select.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -1486,8 +1500,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-select\bootstrap-select.css.map" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Icon.png" />
+    <Content Include="Scripts\bootstrap-select\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
@@ -1717,9 +1733,15 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Views\CommAttach\EditComm.cshtml" />
+    <Content Include="Views\CommAttach\EditAttach.cshtml" />
+    <Content Include="Views\CommAttach\DelComm.cshtml" />
+    <Content Include="Views\CommAttach\DelAttach.cshtml" />
+    <Content Include="Views\Tickets\AssignTicket.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

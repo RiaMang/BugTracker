@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity;
 using PagedList;
 using PagedList.Mvc;
 using BugTracker.Helpers;
+using System.IO;
+using DataTables.Mvc;
 
 namespace BugTracker.Models
 {
@@ -20,39 +22,183 @@ namespace BugTracker.Models
 
         // GET: Tickets
         [Authorize]
-        public ActionResult Index(int ? page, string role)
+        public ActionResult Index()
         {
+            return View();
             //var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
 
+            //string userId = User.Identity.GetUserId();
+            //var user = db.Users.Find(userId); //check navigational properties - find looks in memory first for user if not, takes from database
+            //var tickets = new List<Ticket>();
+            //if (role == "dev")
+            //{
+            //    ViewBag.Dev = "dev";
+            //    tickets = db.Tickets.Where(t => t.AssignedToUserId == userId).ToList();
+            //}
+            
+            //else if(User.IsInRole("Admin"))
+            //{
+            //    tickets = db.Tickets.ToList();
+            //}
+            //else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            //{
+            //    //tickets=(List<Ticket>)user.ListTicketsForUser().Where(u=>u.Id == u.Id);
+            //    tickets = user.Projects.SelectMany(p => p.Tickets).ToList();
+                
+            //} 
+            //else if (User.IsInRole("Submitter"))
+            //{
+            //    tickets = db.Tickets.Where(t => t.OwnerUserId == userId).ToList();
+            //}
+            ////db.Tickets.Include(t => t.AssignedToUser)
+
+            //return View(tickets.OrderByDescending(p => p.Created).ToList());
+
+            ////return View(tickets.ToList().OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
+           
+        }
+
+
+        public JsonResult GetTickets([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest request, bool myTickets)
+        {
             string userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId); //check navigational properties - find looks in memory first for user if not, takes from database
-            var tickets = new List<Ticket>();
-            if (role == "dev")
+            IQueryable<Ticket> tickets;
+            tickets = db.Tickets.Where(t => t.OwnerUserId == userId);
+
+            if (User.IsInRole("Developer") && myTickets == true)
             {
                 ViewBag.Dev = "dev";
-                tickets = db.Tickets.Where(t => t.AssignedToUserId == userId).ToList();
-            }
-            
-            else if(User.IsInRole("Admin"))
+                tickets = db.Tickets.Where(t => t.AssignedToUserId == userId);
+            } 
+            else if (User.IsInRole("Admin"))
             {
-                tickets = db.Tickets.ToList();
+                tickets = db.Tickets;
             }
-            else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            else if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
             {
                 //tickets=(List<Ticket>)user.ListTicketsForUser().Where(u=>u.Id == u.Id);
-                tickets = user.Projects.SelectMany(p => p.Tickets).ToList();
-                
-            } 
+                tickets = user.Projects.SelectMany(p => p.Tickets).AsQueryable();
+
+            }
             else if (User.IsInRole("Submitter"))
             {
-                tickets = db.Tickets.Where(t => t.OwnerUserId == userId).ToList();
+                tickets = db.Tickets.Where(t => t.OwnerUserId == userId);
             }
             //db.Tickets.Include(t => t.AssignedToUser)
 
-            return View(tickets.OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
+            var totalCount = tickets.Count();
+            var search = request.Search.Value;
 
-            //return View(tickets.ToList().OrderByDescending(p => p.Created).ToPagedList(page ?? 1, 10));
-           
+
+            if(!string.IsNullOrWhiteSpace(search))
+            {
+                tickets = tickets.Where(t => t.Title.Contains(search) || t.Description.Contains(search) 
+                    || ( t.AssignedToUserId != "" && t.AssignedToUserId != null && t.AssignedToUser.DisplayName.Contains(search)) 
+                    || t.Project.Name.Contains(search)
+                    || t.OwnerUser.DisplayName.Contains(search) || t.TicketStatus.Name.Contains(search)
+                    || t.TicketPriority.Name.Contains(search) || t.TicketType.Name.Contains(search));
+
+            }
+
+            
+            tickets = tickets.OrderByDescending(t => t.Created);
+
+            var column = request.Columns.FirstOrDefault(r=>r.IsOrdered == true);
+            if(column != null)
+            {
+                if(column.SortDirection == Column.OrderDirection.Descendant)
+                {
+                    switch (column.Data)
+                    {
+                        case "Title":
+                            tickets = tickets.OrderByDescending(t => t.Title);
+                            break;
+                        case "Description":
+                            tickets = tickets.OrderByDescending(t => t.Description);
+                            break;
+                        case "Created":
+                            tickets = tickets.OrderByDescending(t => t.Created);
+                            break;
+                        case "Updated":
+                            tickets = tickets.OrderByDescending(t => t.Updated);
+                            break;
+                        case "Project":
+                            tickets = tickets.OrderByDescending(t => t.Project.Name);
+                            break;
+                        case "AssignedUser":
+                            tickets = tickets.OrderByDescending(t => t.AssignedToUser.DisplayName);
+                            break;
+                        case "OwnerUser":
+                            tickets = tickets.OrderByDescending(t => t.OwnerUser.DisplayName);
+                            break;
+                        case "TicketStatus":
+                            tickets = tickets.OrderByDescending(t => t.TicketStatus.Name);
+                            break;
+                        case "TicketType":
+                            tickets = tickets.OrderByDescending(t => t.TicketType.Name);
+                            break;
+                        case "TicketPriority":
+                            tickets = tickets.OrderByDescending(t => t.TicketPriority.Name);
+                            break;
+
+                    }
+                }
+                else
+                {
+                    switch (column.Data)
+                    {
+                        case "Title":
+                            tickets = tickets.OrderBy(t => t.Title);
+                            break;
+                        case "Description":
+                            tickets = tickets.OrderBy(t => t.Description);
+                            break;
+                        case "Created":
+                            tickets = tickets.OrderBy(t => t.Created);
+                            break;
+                        case "Updated":
+                            tickets = tickets.OrderBy(t => t.Updated);
+                            break;
+                        case "Project":
+                            tickets = tickets.OrderBy(t => t.Project.Name);
+                            break;
+                        case "AssignedUser":
+                            tickets = tickets.OrderBy(t => t.AssignedToUser.DisplayName);
+                            break;
+                        case "OwnerUser":
+                            tickets = tickets.OrderBy(t => t.OwnerUser.DisplayName);
+                            break;
+                        case "TicketStatus":
+                            tickets = tickets.OrderBy(t => t.TicketStatus.Name);
+                            break;
+                        case "TicketType":
+                            tickets = tickets.OrderBy(t => t.TicketType.Name);
+                            break;
+                        case "TicketPriority":
+                            tickets = tickets.OrderBy(t => t.TicketPriority.Name);
+                            break;
+                    }
+                }
+            }
+
+            var uug = tickets.Skip(request.Start).Take(request.Length);
+            var paged = uug.Select(t => new TicketViewModel { 
+                Project = t.Project.Name,
+                TicketStatus = "<span style=\"color:green;\">"+t.TicketStatus.Name+"</span>",
+                TicketPriority = t.TicketPriority.Name,
+                TicketType = t.TicketType.Name,
+                OwnerUser = t.OwnerUser.DisplayName,
+                AssignedToUser = t.AssignedToUser == null ? "" : "<span style=\"color:green;\">"+t.AssignedToUser.DisplayName+"</span>",
+                Title = "<span style=\"color:green;\">" + t.Title + "</span>",
+                Created = t.Created,
+                Updated = t.Updated,
+                Id = t.Id,
+                Description = t.Description,
+                link = "<a href=\"/Tickets/Details/"+t.Id+"\">Details</a>",
+
+            });
+            return Json(new DataTablesResponse(request.Draw, paged, tickets.Count(), totalCount), JsonRequestBehavior.AllowGet);
         }
 
         // GET: Tickets/Details/5
@@ -71,6 +217,87 @@ namespace BugTracker.Models
             return View(ticket);
         }
 
+        //Post Create Comments
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateComment([Bind(Include="TicketId, UserId,Comment")]TicketComment tcom)
+        {
+            if(ModelState.IsValid)
+            {
+                var now = System.DateTimeOffset.Now;
+                Ticket ticket = db.Tickets.Find(tcom.TicketId);
+                if(ticket.AssignedToUserId != null)
+                { 
+                ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
+                Notification note = new Notification
+                {
+                    TicketId = tcom.TicketId,
+                    UserId = user.Id,
+                    Change = "Comment Added",
+                    Details = tcom.Comment,
+                    DateNotified = now,
+                };
+                db.Notifications.Add(note);
+                //user.SendNotification(note);
+                }
+            tcom.Created = now;
+            db.TicketComments.Add(tcom);
+            db.SaveChanges();
+            }
+            return RedirectToAction("Details", new { id=tcom.TicketId });
+
+        }
+
+        //Post Create Comments
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateAttach([Bind(Include = "TicketId, UserId,Description")]TicketAttachment tatt, HttpPostedFileBase attach)
+        {
+            if (attach != null && attach.ContentLength > 0)
+            {
+                //check the file name to make sure its an image
+                var ext = Path.GetExtension(attach.FileName);
+                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != "gif" && ext != "bmp")
+                    ModelState.AddModelError("attach", "Invalid Format."); // throw an error
+            }
+            if (ModelState.IsValid)
+            {
+                if (attach != null)
+                {
+                    //relative server path
+                    var filePath = "/Uploads/";
+                    // path on physical drive on server
+                    var absPath = Server.MapPath("~" + filePath);
+                    // media url for relative path
+                    tatt.FileUrl = filePath + attach.FileName;
+                    //save image
+                    tatt.FilePath = Path.Combine(absPath, attach.FileName);
+                    attach.SaveAs(tatt.FilePath);
+                }
+                var now = System.DateTimeOffset.Now;
+                Ticket ticket = db.Tickets.Find(tatt.TicketId);
+                if(ticket.AssignedToUserId != null)
+                { 
+                ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
+                Notification note = new Notification
+                {
+                    TicketId = tatt.TicketId,
+                    UserId = user.Id,
+                    Change = "Attachment Added",
+                    Details = tatt.Description,
+                    DateNotified = now,
+                };
+                db.Notifications.Add(note);
+                //user.SendNotification(note);
+                }
+                
+                tatt.Created = now;
+                db.TicketAttachments.Add(tatt);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Details", new { id = tatt.TicketId });
+
+        }
         // GET: Tickets/Create
         [Authorize]
         public ActionResult Create()
@@ -119,6 +346,7 @@ namespace BugTracker.Models
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Ticket ticket = db.Tickets.Find(id);
+            TempData["tic"] = ticket;
             if (ticket == null)
             {
                 return HttpNotFound();
@@ -129,6 +357,7 @@ namespace BugTracker.Models
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
+            //Session["tic"] = ticket;
             return View(ticket);
         }
 
@@ -137,10 +366,136 @@ namespace BugTracker.Models
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,Updated,ProjectId,TicketStatusId,TicketPriorityId,TicketTypeId,OwnerUserId,AssignedToUserId")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,ProjectId,TicketStatusId,TicketPriorityId,TicketTypeId,OwnerUserId,AssignedToUserId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                //Ticket oldTic = db.Tickets.Find(ticket.Id);
+                Ticket oldTic = (Ticket)TempData["tic"];
+                string userid = User.Identity.GetUserId();
+                var changed = System.DateTimeOffset.Now;
+                //var thAdd = new <IList>TicketHistory();
+                if (ticket.AssignedToUserId != null && ticket.TicketStatusId == 1)
+                {
+                    ticket.TicketStatusId = 2;
+                    
+                }
+                if(oldTic.Title != ticket.Title)
+                {
+                    TicketHistory th1 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "Title",
+                        OldValue = oldTic.Title,
+                        NewValue = ticket.Title,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    db.TicketHistories.Add(th1);
+                }
+                if (oldTic.Description != ticket.Description)
+                {
+                    TicketHistory th2 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "Description",
+                        OldValue = oldTic.Description,
+                        NewValue = ticket.Description,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    db.TicketHistories.Add(th2);
+                }
+
+                if (oldTic.ProjectId != ticket.ProjectId)
+                {
+                    
+                    TicketHistory th3 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "Project",
+                        OldValue = db.Projects.Find(oldTic.ProjectId).Name,
+                        NewValue = db.Projects.Find(ticket.ProjectId).Name,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    db.TicketHistories.Add(th3);
+                }
+
+                if (oldTic.TicketStatusId != ticket.TicketStatusId)
+                {
+                    TicketHistory th4 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "TicketStatus",
+                        OldValue = db.TicketStatuses.Find(oldTic.TicketStatusId).Name,
+                        NewValue = db.TicketStatuses.Find(ticket.TicketStatusId).Name,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    db.TicketHistories.Add(th4);
+                }
+
+                if (oldTic.TicketPriorityId != ticket.TicketPriorityId)
+                {
+                    ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
+                    TicketHistory th5 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "TicketPriority",
+                        OldValue = db.TicketPriorities.Find(oldTic.TicketPriorityId).Name,
+                        NewValue = db.TicketPriorities.Find(ticket.TicketPriorityId).Name,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    Notification note = new Notification
+                    {
+                        TicketId = ticket.Id,
+                        UserId = user.Id,
+                        Change = "Priority",
+                        Details = th5.NewValue,
+                        DateNotified = changed,
+                    };
+                    db.Notifications.Add(note);
+                    //user.SendNotification(note);
+                    db.TicketHistories.Add(th5);
+                }
+
+                if (oldTic.TicketTypeId != ticket.TicketTypeId)
+                {
+                    TicketHistory th6 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "TicketType",
+                        OldValue = db.TicketTypes.Find(oldTic.TicketTypeId).Name,
+                        NewValue = db.TicketTypes.Find(ticket.TicketTypeId).Name,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    db.TicketHistories.Add(th6);
+                }
+
+                if (oldTic.AssignedToUserId != ticket.AssignedToUserId)
+                {
+                    ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
+                    TicketHistory th7 = new TicketHistory
+                    {
+                        TicketId = ticket.Id,
+                        Property = "AssignedToUser",
+                        OldValue = oldTic.AssignedToUserId == null ? "" : db.Users.Find(oldTic.AssignedToUserId).DisplayName,
+                        NewValue = user.DisplayName,
+                        Changed = changed,
+                        UserId = userid
+                    };
+                    
+                    Notification note = new Notification { TicketId = ticket.Id, UserId = user.Id, Change="Assigned", 
+                        Details=user.DisplayName, DateNotified=changed};
+                    db.Notifications.Add(note);
+                    //user.SendNotification(note);
+                    db.TicketHistories.Add(th7);
+                }
+                
+                ticket.Updated = System.DateTimeOffset.Now;
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

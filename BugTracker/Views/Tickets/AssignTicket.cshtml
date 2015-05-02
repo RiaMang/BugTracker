@@ -1,23 +1,23 @@
-﻿@model BugTracker.Models.AdminUserViewModel
+﻿@model BugTracker.Models.AssignTicketViewModel
 <link rel="stylesheet" href="~/Content/bootstrap-select/bootstrap-select.css" />
 @{
-    ViewBag.Title = "EditUser";
+    ViewBag.Title = "AssignTicket";
 }
 
 
 <div class="container">
-    <h2> Assign Roles </h2>
+    <h2> Assign Ticket </h2>
 
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-green margin-bottom-40">
                 <div class="panel-heading">
-                    <h3 class="panel-title"> @Model.User.DisplayName</h3>
+                    <h3 class="panel-title"> @Model.Ticket.Title</h3>
                 </div>
             </div>
                        
 
-                         <form action="EditUser" method="Post" class="form-horizontal">
+                         <form action="AssignTicket" method="Post" class="form-horizontal">
                                 @Html.HiddenFor(m => m.User.Id, new { })
                                 <div class="form-group">
                                     <div class="col-lg-offset-2 col-lg-9">
