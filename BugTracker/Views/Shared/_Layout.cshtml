@@ -62,12 +62,12 @@
                             <!-- End Home -->
                             @if (User.IsInRole("Admin"))
                             {
-                                <li>@Html.ActionLink("Users", "Users", "Admin")</li>
+                                <li>@Html.ActionLink("Manage Roles", "Users", "Admin")</li>
                             }
                             <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
                             @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || User.IsInRole("Developer"))
                             {
-                                <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
+                                <li>@Html.ActionLink("Manage Projects", "Index", "Projects")</li>
                             }
                             
                             

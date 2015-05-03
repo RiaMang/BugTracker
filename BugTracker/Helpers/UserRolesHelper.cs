@@ -36,9 +36,6 @@ namespace BugTracker.Models
         public ICollection<ApplicationUser> UsersInRole(string roleName)
         {
             var resultList = new List<ApplicationUser>();
-            //ApplicationUser u = new ApplicationUser();
-            //ApplicationDbContext db = new ApplicationDbContext();
-            //resultList = u.Roles.Any(r => r.UserId == .Id));
             var List = manager.Users.ToList();
             foreach (var user in List)
             {

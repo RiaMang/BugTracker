@@ -59,7 +59,8 @@ namespace BugTracker.Models
         }
 
 
-        public JsonResult GetTickets([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest request, bool myTickets)
+        public JsonResult GetTickets([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest request, bool myTickets, 
+            DateTimeOffset? date, string type, string priority, string status)
         {
             string userId = User.Identity.GetUserId();
             var user = db.Users.Find(userId); //check navigational properties - find looks in memory first for user if not, takes from database
@@ -86,6 +87,23 @@ namespace BugTracker.Models
                 tickets = db.Tickets.Where(t => t.OwnerUserId == userId);
             }
             //db.Tickets.Include(t => t.AssignedToUser)
+
+            if(date != null)
+            {
+                tickets = tickets.Where(t => t.Created > date);
+            }
+            if(type!=null && type!="All")
+            {
+                tickets = tickets.Where(t => t.TicketType.Name == type);
+            }
+            if (priority != null && priority != "All")
+            {
+                tickets = tickets.Where(t => t.TicketPriority.Name == priority);
+            }
+            if (status != null && status != "All")
+            {
+                tickets = tickets.Where(t => t.TicketStatus.Name == status);
+            }
 
             var totalCount = tickets.Count();
             var search = request.Search.Value;
@@ -210,12 +228,17 @@ namespace BugTracker.Models
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Ticket ticket = db.Tickets.Find(id);
+            TempData["tic"] = ticket;
+            UserRolesHelper urh = new UserRolesHelper();
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "DisplayName", ticket.AssignedToUserId);
             if (ticket == null)
             {
                 return HttpNotFound();
             }
             return View(ticket);
         }
+
+        
 
         //Post Create Comments
         [HttpPost]
@@ -328,13 +351,32 @@ namespace BugTracker.Models
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+            UserRolesHelper urh = new UserRolesHelper();
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
+            return View(ticket);
+        }
+
+        //get Assign Ticket
+        public ActionResult AssignTicket(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Ticket ticket = db.Tickets.Find(id);
+            
+            if (ticket == null)
+            {
+                return HttpNotFound();
+            }
+            TempData["tic"] = ticket;
+            UserRolesHelper urh = new UserRolesHelper();
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "DisplayName", ticket.AssignedToUserId);
             return View(ticket);
         }
 
@@ -346,12 +388,13 @@ namespace BugTracker.Models
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Ticket ticket = db.Tickets.Find(id);
-            TempData["tic"] = ticket;
+            //TempData["tic"] = ticket;
             if (ticket == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+            UserRolesHelper urh = new UserRolesHelper();
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "DisplayName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
@@ -498,7 +541,7 @@ namespace BugTracker.Models
                 ticket.Updated = System.DateTimeOffset.Now;
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new {id = ticket.Id });
             }
             ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);

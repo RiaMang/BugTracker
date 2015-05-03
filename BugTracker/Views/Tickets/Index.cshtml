@@ -22,12 +22,31 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"> Issues</h3>
                 </div>
-                @if (User.IsInRole("Developer"))
-                {
-                    <div class="col-lg-offset-4">
-                        <label>Show My Tickets Only: <input type="checkbox" id="myTickets" value="off" /></label>
+                <div class="row">
+                    @if (User.IsInRole("Developer"))
+                    {
+                        <div class="col-md-4">
+                            <label>Show My Tickets: <input type="checkbox" id="myTickets" value="off" /></label>
+                        </div>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="col-md-4">
+                            <label>Show Tickets After: <input type="date" id="date" /></label>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Tickets Type: @Html.DropDownList("type", new SelectList(new string[] { "All","Enhancement", "Bug", "Info Needed", "New Feature", "Requirement" }), new {@id="type" })</label>
                     </div>
-                }
+                    <div class="col-md-4">
+                        <label>Tickets Priority: @Html.DropDownList("priority", new SelectList(new string[] { "All", "Important", "Urgent", "Critical" }), new { @id = "priority" })</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Tickets Status: @Html.DropDownList("status", new SelectList(new string[] { "All", "Open", "Assigned", "InProgress", "Resolved" }), new { @id = "status" })</label>
+                    </div>
+                </div>
                 <table id="ticket" class="display" cellspacing="0">
                     <thead>
                         <tr>
@@ -133,6 +152,8 @@
 @section scripts {
 
 <script type="text/javascript" src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="~/assets/js/plugins/datepicker.js"></script>
+
 <script>
     $(document).ready(function () {
        
@@ -158,13 +179,17 @@
 
 
         $('#ticket').DataTable({
-            "processng": true,
+            "processing": true,
             "serverSide": true,
             "ajax": {
                 "url": "/Tickets/GetTickets",
                 "type": "Post",
                 "data": function (d) {
                     d.myTickets = $('#myTickets').is(':checked');
+                    d.date = $('#date').val();
+                    d.type = $('#type').val();
+                    d.priority = $('#priority').val();
+                    d.status = $('#status').val();
                     // d.custom = $('#myInput').val();
                     // etc
                 }
@@ -193,6 +218,18 @@
         });
 
         $('#myTickets').change(function () {
+            $('#ticket').dataTable().api().draw();
+        })
+        $('#date').change(function () {
+            $('#ticket').dataTable().api().draw();
+        })
+        $('#type').change(function () {
+            $('#ticket').dataTable().api().draw();
+        })
+        $('#status').change(function () {
+            $('#ticket').dataTable().api().draw();
+        })
+        $('#priority').change(function () {
             $('#ticket').dataTable().api().draw();
         })
     });

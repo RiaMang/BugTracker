@@ -1,4 +1,4 @@
-﻿@model BugTracker.Models.AssignTicketViewModel
+﻿@model BugTracker.Models.Ticket
 <link rel="stylesheet" href="~/Content/bootstrap-select/bootstrap-select.css" />
 @{
     ViewBag.Title = "AssignTicket";
@@ -6,31 +6,50 @@
 
 
 <div class="container">
-    <h2> Assign Ticket </h2>
-
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-green margin-bottom-40">
                 <div class="panel-heading">
-                    <h3 class="panel-title"> @Model.Ticket.Title</h3>
+                    <h3 class="panel-title"> Assign Ticket</h3>
                 </div>
-            </div>
-                       
-
-                         <form action="AssignTicket" method="Post" class="form-horizontal">
-                                @Html.HiddenFor(m => m.User.Id, new { })
-                                <div class="form-group">
-                                    <div class="col-lg-offset-2 col-lg-9">
-                                        @Html.ListBox("SelectedRoles", Model.Roles, htmlAttributes: new { @class = "selectpicker" })
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-lg-offset-2 col-lg-9">
-                                        <button type="submit" class="btn-u btn-u-green">Assign Roles</button>
-                                    </div>
-                                </div>
-                            </form>
+                <div>
                         
+                        @using (Html.BeginForm("Edit", "Tickets"))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+
+                                <hr />
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.HiddenFor(model => model.Id)
+                                @Html.HiddenFor(model => model.OwnerUserId)
+                                @Html.HiddenFor(model => model.Created)
+                                @Html.HiddenFor(model => model.Updated)
+                                @Html.HiddenFor(model => model.Title)
+                                @Html.HiddenFor(model => model.Description)
+                                @Html.HiddenFor(model => model.ProjectId)
+                                @Html.HiddenFor(model => model.TicketStatusId)
+                                @Html.HiddenFor(model => model.TicketTypeId)
+                                @Html.HiddenFor(model => model.TicketPriorityId)
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.AssignedToUserId, "AssignedToUserId", htmlAttributes: new { @class = "control-label col-md-5" })
+                                    <div class="col-md-7">
+                                        @Html.DropDownList("AssignedToUserId", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.AssignedToUserId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-5 col-md-7">
+                                        <input type="submit" value="Assign" class="btn btn-default" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    
+                </div>
+            </div>                 
             
         </div>
         <!--End Hover Rows-->

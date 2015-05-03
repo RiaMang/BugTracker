@@ -12,6 +12,10 @@
     { 
         @Html.ActionLink("Edit Ticket", "Edit", new { id = Model.Id }) <span> | </span>
     }
+    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+    {
+        @Html.ActionLink("Assign Ticket", "AssignTicket", new { id = Model.Id }) <span> | </span>
+    }
         @Html.ActionLink("Back to List", "Index")
     </p>
     
@@ -21,9 +25,45 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"> @Model.Title</h3>
                 </div>
-
+                
                 <hr />
+                   
                 <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Title)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </dt>
+
+                    <dd>
+                        @Html.Raw(Model.Description)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Created)
+                    </dt>
+
+                    <dd>
+                        @Model.Created.DateTime.ToLongDateString()
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Updated)
+                    </dt>
+
+                    <dd>
+                        @if (Model.Updated != null)
+                        {
+                            @Model.Updated.Value.DateTime.ToLongDateString()
+                        }
+                    </dd>
+                    
                     <dt>
                         @Html.DisplayNameFor(model => model.AssignedToUser)
                     </dt>
@@ -72,40 +112,7 @@
                         @Html.DisplayFor(model => model.TicketType.Name)
                     </dd>
 
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Title)
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.Title)
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Description)
-                    </dt>
-
-                    <dd>
-                        @Html.Raw(Model.Description)
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Created)
-                    </dt>
-
-                    <dd>
-                        @Model.Created.DateTime.ToLongDateString()
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Updated)
-                    </dt>
-
-                    <dd>
-                        @if (Model.Updated != null)
-                        {
-                            @Model.Updated.Value.DateTime.ToLongDateString()
-                        }
-                    </dd>
+                    
 
                 </dl>
                 @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || Model.OwnerUserId == User.Identity.GetUserId() || Model.AssignedToUserId == User.Identity.GetUserId())
@@ -153,6 +160,7 @@
                         </form>
                     </div>
                 }
+               
                 <div>
                     @foreach (var com in Model.TicketComments)
                     {
@@ -189,7 +197,9 @@
                                 @Html.ActionLink("Delete Attachment", "DelAttach", "CommAttach", new { id = att.Id }, null)
                             }
                         </p>
+                        <br />
                     }
+                    
                 </div>
             </div>
         </div>
@@ -203,7 +213,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>User</th>
+                                <th>AssignedUser</th>
                                 <th>Date</th>
                                 <th>Change</th>
                                 <th>Details</th>
@@ -215,14 +225,16 @@
                             {
                             <tr>
                                 <td>@note.User.DisplayName </td>
-                                <td>@note.DateNotified</td>
+                                <td>@note.DateNotified.DateTime.ToLongDateString()</td>
                                 <td>@note.Change</td>
                                 <td>@note.Details</td>
                             </tr>
                             }
 
                         </tbody>
+                       
                     </table>
+                   
                 </div>
             </div>
 
@@ -239,7 +251,7 @@
                                 <th>OldValue</th>
                                 <th>NewValue</th>
                                 <th>ChangeDate</th>
-                                <th>User</th>
+                                <th>ByUser</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -250,7 +262,7 @@
                                     <td>@hist.Property </td>
                                     <td>@hist.OldValue</td>
                                     <td>@hist.NewValue</td>
-                                    <td>@hist.Changed</td>
+                                    <td>@hist.Changed.DateTime.ToLongDateString()</td>
                                     <td>@hist.User.DisplayName</td>
                                 </tr>
                             }
