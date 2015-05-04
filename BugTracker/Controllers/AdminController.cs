@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using System.Net;
 
 namespace BugTracker.Controllers
 {
@@ -20,6 +21,25 @@ namespace BugTracker.Controllers
             return View(db.Users.ToList());
         }
 
+        // GET: List Tickets
+        [Authorize(Roles = "Admin,Project Manager")]
+        public ActionResult ListTickets(int? projectId)
+        {
+
+            if (projectId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Project project = db.Projects.Find(projectId);
+
+            if (project == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Title = project.Name;
+            return View(project.Tickets.OrderByDescending(t => t.Created).ToList());
+        }
+        
         public ActionResult EditUser(string Id)
         {
             var user = db.Users.Find(Id);

@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Users";
 }
+@using BugTracker.Helpers;
 @model List <BugTracker.Models.ApplicationUser>
 
 <div class="container">
@@ -34,6 +35,12 @@
                                 <td>@user.DisplayName   </td>
                                 <td><a href="@Url.Action("EditUser", new { Id = user.Id})">   Edit</a></td>
                                 <td><a href="@Url.Action("DetailsUserRoles", new { Id = user.Id})">  Details</a></td>
+                                
+                                @if (user.IsUserInRole("Developer"))
+                                {
+                                    <td><a href="@Url.Action("ListTickets","Projects", new { assignedId = user.Id})">  Tickets Assigned</a></td>
+                                }
+                                <td><a href="@Url.Action("ListTickets","Projects", new { ownerId = user.Id})">  Tickets Owned</a></td>
                                 
                             </tr>
                         }

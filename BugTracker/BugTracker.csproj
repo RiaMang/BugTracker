@@ -1738,6 +1738,7 @@
     <Content Include="Views\CommAttach\DelComm.cshtml" />
     <Content Include="Views\CommAttach\DelAttach.cshtml" />
     <Content Include="Views\Tickets\AssignTicket.cshtml" />
+    <Content Include="Views\Projects\ListTickets.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

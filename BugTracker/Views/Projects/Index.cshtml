@@ -39,7 +39,8 @@
 
                                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
 
-                                    @Html.ActionLink("Assign", "AssignUsers", new { projectId = item.Id })
+                                    @Html.ActionLink("Assign", "AssignUsers", new { projectId = item.Id }) | 
+                                    @Html.ActionLink("Tickets", "ListTickets", new { projectId = item.Id })
                                 </td>
                             }
                             else if (User.IsInRole("Project Manager"))

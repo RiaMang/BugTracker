@@ -49,12 +49,64 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
+            var ticsIssued = project.Tickets.Count();
+            var ticsResolved = project.Tickets.Where(t => t.TicketStatus.Name == "Resolved").Count();
             ProjUsersVM projUsersVM = new ProjUsersVM();
             projUsersVM.ProjectId = project.Id;
             projUsersVM.ProjectName = project.Name;
             projUsersVM.Users = project.Users.ToList();
+            projUsersVM.ticsIssued = ticsIssued;
+            projUsersVM.ticsResolved = ticsResolved;
 
             return View(projUsersVM);
+        }
+
+        // GET: List Tickets
+        [Authorize(Roles = "Admin,Project Manager,Developer")]
+        public ActionResult ListTickets(int? projectId, string ownerId, string assignedId)
+        {
+
+            if (projectId == null && ownerId == null && assignedId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if(projectId != null)
+            {
+
+                Project project = db.Projects.Find(projectId);
+
+                if (project == null)
+                {
+                    return HttpNotFound();
+                }
+                ViewBag.Title = "Project - "+project.Name;
+                return View(project.Tickets.OrderByDescending(t => t.Created).ToList());
+            }
+            if (ownerId != null)
+            {
+
+                ApplicationUser user = db.Users.Find(ownerId);
+
+                if (user == null)
+                {
+                    return HttpNotFound();
+                }
+                ViewBag.Title = "Owner - "+user.DisplayName;
+                return View(db.Tickets.Where(t=>t.OwnerUserId == user.Id).OrderByDescending(t => t.Created).ToList());
+            }
+            if (assignedId != null)
+            {
+
+                ApplicationUser user = db.Users.Find(assignedId);
+
+                if (user == null)
+                {
+                    return HttpNotFound();
+                }
+                ViewBag.Title = "Assigned to - "+user.DisplayName;
+                return View(db.Tickets.Where(t => t.AssignedToUserId == user.Id).OrderByDescending(t => t.Created).ToList());
+            }
+            return RedirectToAction("Index", "Tickets");
         }
 
         // GET: Projects/Create

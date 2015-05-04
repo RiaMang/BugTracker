@@ -1,5 +1,6 @@
 ﻿using BugTracker.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace BugTracker.Helpers
     public static class HelperExtensions
     {
         private static ApplicationDbContext db = new ApplicationDbContext();
+
         public static ICollection<Ticket> ListTicketsForUser(this ApplicationUser user)
         {
             var projects = user.Projects.ToList();
@@ -19,6 +21,12 @@ namespace BugTracker.Helpers
                 tickets.AddRange(p.Tickets);
             }
             return (tickets);
+        }
+
+        public static bool IsUserInRole(this ApplicationUser user, string roleName)
+        {
+            UserManager<ApplicationUser> manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            return manager.IsInRole(user.Id, roleName);
         }
 
         public static void SendNotification(this ApplicationUser user, Notification note)

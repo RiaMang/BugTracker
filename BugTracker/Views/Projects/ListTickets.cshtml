@@ -1,0 +1,118 @@
+﻿@model List<BugTracker.Models.Ticket>
+
+<h3>List Tickets</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-green margin-bottom-40">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> @ViewBag.Title</h3>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            
+                            <th>
+                                Title
+                            </th>
+                            
+                            <th>
+                                Created
+                            </th>
+                            <th>
+                                Updated
+                            </th>
+                            <th>
+                                AssignedTo
+                            </th>
+                            <th>
+                                Owner
+                            </th>
+                            <th>
+                                Project
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Priority
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Link
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span style="cursor:pointer;" data-toggle="popover" data-html="true" title="@item.Title" data-content="@Html.Raw(item.Description)">
+                                        @item.Title
+                                    </span>
+                                </td>
+                                
+                                <td>
+                                    @item.Created.DateTime.ToLongDateString()
+                                </td>
+                                <td>
+                                    @if (item.Updated != null)
+                                    {
+                                        @item.Updated.Value.DateTime.ToLongDateString()
+                                    }
+
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Project.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                                </td>
+                                
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketType.Name)
+                                </td>
+                                
+                                
+                                <td>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", "Tickets", new { id = item.Id }, null)<span> | </span>
+                                    }
+                                    @Html.ActionLink("Details", "Details", "Tickets", new { id = item.Id }, null)
+
+                                </td>
+                            </tr>
+                        }
+
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    
+    <script>
+        $(document).ready(function () {
+
+            $('[data-toggle="popover"]').popover()
+        });
+    </script>
+}

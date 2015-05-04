@@ -11,26 +11,10 @@ namespace BugTracker.Controllers
     {
         public ActionResult Index()
         {
-            ApplicationDbContext db = new ApplicationDbContext();
             
-            var userList = db.Users.ToList();
-            //UserRolesHelper u = new UserRolesHelper();
-            return View(userList);
+            return View();
             
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }

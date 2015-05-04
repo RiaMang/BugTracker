@@ -25,5 +25,7 @@ namespace BugTracker.Models
         public int ProjectId { get; set; }
         public string ProjectName { get; set; }
         public IList<ApplicationUser> Users { get; set; }
+        public int ticsIssued { get; set; }
+        public int ticsResolved { get; set; }
     }
 }
