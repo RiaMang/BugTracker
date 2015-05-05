@@ -279,7 +279,7 @@ namespace BugTracker.Models
             if (attach != null && attach.ContentLength > 0)
             {
                 //check the file name to make sure its an image
-                var ext = Path.GetExtension(attach.FileName);
+                var ext = Path.GetExtension(attach.FileName).ToLower();
                 if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != "gif" && ext != "bmp")
                     ModelState.AddModelError("attach", "Invalid Format."); // throw an error
             }
@@ -414,10 +414,21 @@ namespace BugTracker.Models
             if (ModelState.IsValid)
             {
                 //Ticket oldTic = db.Tickets.Find(ticket.Id);
-                Ticket oldTic = (Ticket)TempData["tic"];
+                //Ticket oldTic = (Ticket)TempData["tic"];
+                
+                 var oldTic = (from t in db.Tickets.AsNoTracking()
+                  where t.Id == ticket.Id
+                  select t).FirstOrDefault(); // same as
+                 
+                 /* var oldTic = db.Tickets.AsNoTracking().FirstOrDefault(t=>t.t.Id == ticket.Id);
+                 * */
+
                 string userid = User.Identity.GetUserId();
                 var changed = System.DateTimeOffset.Now;
-                //var thAdd = new <IList>TicketHistory();
+                
+
+                var editId = Guid.NewGuid().ToString(); // store in db as string and then group by - will return list of lists
+                // key value pairs - key is edit id and value is the list.
                 if (ticket.AssignedToUserId != null && ticket.TicketStatusId == 1)
                 {
                     ticket.TicketStatusId = 2;
@@ -431,6 +442,7 @@ namespace BugTracker.Models
                         Property = "Title",
                         OldValue = oldTic.Title,
                         NewValue = ticket.Title,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };

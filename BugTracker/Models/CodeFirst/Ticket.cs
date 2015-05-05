@@ -31,12 +31,17 @@ namespace BugTracker.Models
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }
-
+        [Display(Name="Project")]
         public int ProjectId { get; set; }
+        [Display(Name = "Status")]
         public int TicketStatusId { get; set; }
+        [Display(Name = "Priority")]
         public int TicketPriorityId { get; set; }
+        [Display(Name = "Type")]
         public int TicketTypeId { get; set; }
+        [Display(Name = "Owner")]
         public string OwnerUserId { get; set; }
+        [Display(Name = "Assigned")]
         public string AssignedToUserId { get; set; }
 
         public virtual Project Project { get; set; }

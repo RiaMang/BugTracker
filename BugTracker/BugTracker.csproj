@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44301</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -1501,8 +1501,52 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-select\bootstrap-select.css.map" />
+    <Content Include="lou-multi-select\.gitignore" />
+    <Content Include="lou-multi-select\bower.json" />
+    <Content Include="lou-multi-select\img\Thumbs.db" />
+    <Content Include="lou-multi-select\multi-select.jquery.json" />
+    <Content Include="lou-multi-select\README.markdown" />
+    <Content Include="lou-multi-select\test\lib\jasmine-1.2.0\MIT.LICENSE" />
+    <None Include="Properties\PublishProfiles\RiasBugTracker - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\RiasBugTracker - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Icon.png" />
+    <Content Include="jquery-ui\external\jquery\jquery.js" />
+    <Content Include="jquery-ui\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
+    <Content Include="jquery-ui\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
+    <Content Include="jquery-ui\images\ui-bg_flat_10_000000_40x100.png" />
+    <Content Include="jquery-ui\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="jquery-ui\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="jquery-ui\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="jquery-ui\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="jquery-ui\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="jquery-ui\images\ui-bg_highlight-soft_75_ffe45c_1x100.png" />
+    <Content Include="jquery-ui\images\ui-icons_222222_256x240.png" />
+    <Content Include="jquery-ui\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="jquery-ui\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="jquery-ui\images\ui-icons_ffd27a_256x240.png" />
+    <Content Include="jquery-ui\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="jquery-ui\index.html" />
+    <Content Include="jquery-ui\jquery-ui.css" />
+    <Content Include="jquery-ui\jquery-ui.js" />
+    <Content Include="jquery-ui\jquery-ui.min.css" />
+    <Content Include="jquery-ui\jquery-ui.min.js" />
+    <Content Include="jquery-ui\jquery-ui.structure.css" />
+    <Content Include="jquery-ui\jquery-ui.structure.min.css" />
+    <Content Include="jquery-ui\jquery-ui.theme.css" />
+    <Content Include="jquery-ui\jquery-ui.theme.min.css" />
+    <Content Include="lou-multi-select\css\multi-select.css" />
+    <Content Include="lou-multi-select\img\switch.png" />
+    <Content Include="lou-multi-select\js\jquery.multi-select.js" />
+    <Content Include="lou-multi-select\LICENSE.txt" />
+    <Content Include="lou-multi-select\test\lib\jasmine-1.2.0\jasmine-html.js" />
+    <Content Include="lou-multi-select\test\lib\jasmine-1.2.0\jasmine.css" />
+    <Content Include="lou-multi-select\test\lib\jasmine-1.2.0\jasmine.js" />
+    <Content Include="lou-multi-select\test\lib\jasmine-jquery.js" />
+    <Content Include="lou-multi-select\test\SpecRunner.html" />
+    <Content Include="lou-multi-select\test\spec\multiSelectSpec.js" />
+    <Content Include="lou-multi-select\test\spec\SpecHelper.js" />
+    <Content Include="lou-multi-select\test\src\jquery.js" />
     <Content Include="Scripts\bootstrap-select\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1766,7 +1810,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54844</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:54844/</IISUrl>
+          <IISUrl>https://localhost:44301/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

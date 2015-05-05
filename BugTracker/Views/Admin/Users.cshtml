@@ -33,15 +33,17 @@
                                 <td>@user.UserName   </td>
                                 <td>@user.Email   </td>
                                 <td>@user.DisplayName   </td>
-                                <td><a href="@Url.Action("EditUser", new { Id = user.Id})">   Edit</a></td>
+                                <td><a href="@Url.Action("EditUser", new { Id = user.Id})">   Assign Roles</a></td>
                                 <td><a href="@Url.Action("DetailsUserRoles", new { Id = user.Id})">  Details</a></td>
                                 
+                                <td><a href="@Url.Action("ListTickets","Projects", new { ownerId = user.Id})">  Tickets Owned</a></td>
                                 @if (user.IsUserInRole("Developer"))
                                 {
                                     <td><a href="@Url.Action("ListTickets","Projects", new { assignedId = user.Id})">  Tickets Assigned</a></td>
+                                }else
+                                {
+                                    <td> </td>
                                 }
-                                <td><a href="@Url.Action("ListTickets","Projects", new { ownerId = user.Id})">  Tickets Owned</a></td>
-                                
                             </tr>
                         }
 

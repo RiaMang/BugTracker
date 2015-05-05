@@ -12,7 +12,7 @@ namespace BugTracker.Models
         public int TicketId { get; set; }
         [Required]
         public string Property { get; set; }
-        public int EditId { get; set; }
+        public string EditId { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
         public DateTimeOffset Changed { get; set; }

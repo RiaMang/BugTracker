@@ -156,6 +156,8 @@ namespace BugTracker.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    UserRolesHelper helper = new UserRolesHelper();
+                    helper.AddUserToRole(user.Id, "Submitter");
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -398,6 +400,16 @@ namespace BugTracker.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                    var user = new ApplicationUser { Email = loginInfo.Email, UserName = loginInfo.Email, DisplayName = loginInfo.DefaultUserName };
+                    UserManager.Create(user);
+                    UserRolesHelper helper = new UserRolesHelper();
+                    helper.AddUserToRole(user.Id,"Submitter");
+                    var r = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
+                    if (r.Succeeded)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        return RedirectToLocal(returnUrl);
+                    }
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }

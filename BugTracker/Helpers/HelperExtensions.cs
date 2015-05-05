@@ -8,6 +8,14 @@ using System.Web;
 
 namespace BugTracker.Helpers
 {
+    /// <summary>
+    /// Love the comments
+    /// 
+    /// 
+    /// 
+    /// 
+    /// 
+    /// </summary>
     public static class HelperExtensions
     {
         private static ApplicationDbContext db = new ApplicationDbContext();

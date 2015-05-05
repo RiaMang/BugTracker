@@ -60,10 +60,11 @@ namespace BugTracker.Controllers
         {
             var user = db.Users.Find(model.User.Id);
             var um = Request.GetOwinContext().Get<ApplicationUserManager>();
-
+            string[] sel = {};
+            var SelRoles = model.SelectedRoles != null ? model.SelectedRoles : sel;
             foreach(var role in db.Roles.ToList())
             {
-                if (model.SelectedRoles.Contains(role.Name))
+                if (SelRoles.Contains(role.Name))
                     um.AddToRole(user.Id, role.Name);
                 else
                     um.RemoveFromRole(user.Id, role.Name);

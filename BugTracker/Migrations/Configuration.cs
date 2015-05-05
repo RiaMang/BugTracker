@@ -96,7 +96,7 @@ namespace BugTracker.Migrations
                 };
                 userManager.Create(user, "Password-1");
 
-                userManager.AddToRole(user.Id, "Submitter");
+                userManager.AddToRole(user.Id, "Project Manager");
                 userManager.AddToRole(user.Id, "Developer");
             }
             //if (!userManager.IsInRole(user.Id, "Admin"))

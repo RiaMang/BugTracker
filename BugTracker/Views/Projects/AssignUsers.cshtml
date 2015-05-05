@@ -25,7 +25,7 @@
                 @Html.HiddenFor(m => m.Project.Name, new { })
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
-                        @Html.ListBoxFor(m => m.SelectedUsers, Model.Users as MultiSelectList, htmlAttributes: new { @class="selectpicker" })
+                        @Html.ListBoxFor(m => m.SelectedUsers, Model.Users as MultiSelectList, htmlAttributes: new { @class="selectpicker", data_live_search="true" })
                     </div>
                 </div>
                 <div class="form-group">

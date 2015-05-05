@@ -2,13 +2,14 @@
 
 @if (Request.IsAuthenticated)
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink(User.Identity.GetUserName(), "UserAccount", "Account")</li>
-    </ul>
+    
     
         using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
         {
         @Html.AntiForgeryToken()
+        <ul class="nav navbar-nav">
+            <li>@Html.ActionLink(User.Identity.GetUserName(), "UserAccount", "Account")</li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
