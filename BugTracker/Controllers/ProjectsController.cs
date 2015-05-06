@@ -215,18 +215,18 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.SelectedUsers != null)
-                {
+                
                     var proj = db.Projects.Find(model.Project.Id);
                     var userList = new List<ApplicationUser>();
                     if (User.IsInRole("Project Manager"))
                         userList = urHelper.UsersInRole("Developer").ToList();
                     else
                         userList = urHelper.UsersNotInRole("Submitter").ToList();
-
+                    string [] sel = {};
+                    var selected = model.SelectedUsers != null ? model.SelectedUsers : sel;
                     foreach (var user in userList)
                     {
-                        if (model.SelectedUsers.Contains(user.Id))
+                        if (selected.Contains(user.Id))
                         {
                             ph.AddUserToProject(user.Id, proj.Id);
                         }
@@ -235,12 +235,7 @@ namespace BugTracker.Controllers
                             ph.RemoveUserFromProject(user.Id, proj.Id);
                         }
                     }
-                }
-                else
-                {
-                    // display error.
-                }
-
+                
                 return RedirectToAction("Index");
             }
             return RedirectToAction("AssignUsers",model.Project.Id);

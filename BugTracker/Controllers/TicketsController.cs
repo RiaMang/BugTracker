@@ -325,7 +325,8 @@ namespace BugTracker.Models
         [Authorize]
         public ActionResult Create()
         {
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName");
+            UserRolesHelper urh = new UserRolesHelper();
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "FirstName");
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName");
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
@@ -374,7 +375,7 @@ namespace BugTracker.Models
             {
                 return HttpNotFound();
             }
-            TempData["tic"] = ticket;
+            //TempData["tic"] = ticket;
             UserRolesHelper urh = new UserRolesHelper();
             ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "DisplayName", ticket.AssignedToUserId);
             return View(ticket);
@@ -429,6 +430,7 @@ namespace BugTracker.Models
 
                 var editId = Guid.NewGuid().ToString(); // store in db as string and then group by - will return list of lists
                 // key value pairs - key is edit id and value is the list.
+                
                 if (ticket.AssignedToUserId != null && ticket.TicketStatusId == 1)
                 {
                     ticket.TicketStatusId = 2;
@@ -456,6 +458,7 @@ namespace BugTracker.Models
                         Property = "Description",
                         OldValue = oldTic.Description,
                         NewValue = ticket.Description,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };
@@ -471,6 +474,7 @@ namespace BugTracker.Models
                         Property = "Project",
                         OldValue = db.Projects.Find(oldTic.ProjectId).Name,
                         NewValue = db.Projects.Find(ticket.ProjectId).Name,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };
@@ -485,6 +489,7 @@ namespace BugTracker.Models
                         Property = "TicketStatus",
                         OldValue = db.TicketStatuses.Find(oldTic.TicketStatusId).Name,
                         NewValue = db.TicketStatuses.Find(ticket.TicketStatusId).Name,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };
@@ -500,6 +505,7 @@ namespace BugTracker.Models
                         Property = "TicketPriority",
                         OldValue = db.TicketPriorities.Find(oldTic.TicketPriorityId).Name,
                         NewValue = db.TicketPriorities.Find(ticket.TicketPriorityId).Name,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };
@@ -524,6 +530,7 @@ namespace BugTracker.Models
                         Property = "TicketType",
                         OldValue = db.TicketTypes.Find(oldTic.TicketTypeId).Name,
                         NewValue = db.TicketTypes.Find(ticket.TicketTypeId).Name,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };
@@ -539,6 +546,7 @@ namespace BugTracker.Models
                         Property = "AssignedToUser",
                         OldValue = oldTic.AssignedToUserId == null ? "" : db.Users.Find(oldTic.AssignedToUserId).DisplayName,
                         NewValue = user.DisplayName,
+                        EditId = editId,
                         Changed = changed,
                         UserId = userid
                     };
@@ -555,7 +563,8 @@ namespace BugTracker.Models
                 db.SaveChanges();
                 return RedirectToAction("Details", new {id = ticket.Id });
             }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+            UserRolesHelper urh = new UserRolesHelper();
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);

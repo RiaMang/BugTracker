@@ -69,6 +69,10 @@
                             {
                                 <li>@Html.ActionLink("Manage Projects", "Index", "Projects")</li>
                             }
+                            @if (User.IsInRole("Developer"))
+                            {
+                                <li>@Html.ActionLink("Notifications", "Notifications", "Home")</li>
+                            }
                             
                             
                             <li> @Html.Partial("_LoginPartial")</li>
