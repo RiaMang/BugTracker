@@ -41,7 +41,7 @@ namespace BugTracker
             var transportWeb = new Web(credentials);
 
             // send the email
-            transportWeb.Deliver(myMessage);
+            transportWeb.DeliverAsync(myMessage);
 
             return Task.FromResult(0);
         }

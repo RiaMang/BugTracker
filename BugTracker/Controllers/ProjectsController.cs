@@ -167,6 +167,7 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
+
         [Authorize (Roles="Admin,Project Manager")]
         public ActionResult AssignUsers(int projectId)
         {

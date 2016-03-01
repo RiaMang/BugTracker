@@ -12,9 +12,7 @@ namespace BugTracker.Controllers
     {
         public ActionResult Index()
         {
-            
             return View();
-            
         }
         [Authorize(Roles="Developer")]
         public ActionResult Notifications()

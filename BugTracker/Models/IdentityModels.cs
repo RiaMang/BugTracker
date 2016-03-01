@@ -13,14 +13,12 @@ namespace BugTracker.Models
         public ApplicationUser()
         {
             this.Projects = new HashSet<Project>();
-            //this.TicketsOwned = new HashSet<TicketsOwned>();
             this.AssignedTickets = new HashSet<Ticket>();
 
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string DisplayName { get; set; }
-
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -37,20 +35,21 @@ namespace BugTracker.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        //public ApplicationDbContext()
-        //    : base("DefaultConnection", throwIfV1Schema: false)
-        //{
-        //}
-
         public ApplicationDbContext()
-            : base("AzureConnection", throwIfV1Schema: false)
+            : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
+
+        //public ApplicationDbContext()
+        //    : base("AzureConnection", throwIfV1Schema: false)
+        //{
+        //}
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
@@ -60,5 +59,6 @@ namespace BugTracker.Models
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+
     }
 }

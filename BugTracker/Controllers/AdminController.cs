@@ -58,16 +58,17 @@ namespace BugTracker.Controllers
         [HttpPost]
         public ActionResult EditUser(AdminUserViewModel model)
         {
-            var user = db.Users.Find(model.User.Id);
+            model.User = db.Users.Find(model.User.Id);
             var um = Request.GetOwinContext().Get<ApplicationUserManager>();
             string[] sel = {};
             var SelRoles = model.SelectedRoles != null ? model.SelectedRoles : sel;
             foreach(var role in db.Roles.ToList())
             {
                 if (SelRoles.Contains(role.Name))
-                    um.AddToRole(user.Id, role.Name);
+                    um.AddToRole(model.User.Id, role.Name);
                 else
-                    um.RemoveFromRole(user.Id, role.Name);
+                    if (!(role.Name == "Admin" && model.User.UserName == "rmanglani@coderfoundry.com"))
+                    um.RemoveFromRole(model.User.Id, role.Name);
             }
             //return RedirectToAction("EditUser", new { Id = model.User.Id });
             return RedirectToAction("DetailsUserRoles", new { Id = model.User.Id });
