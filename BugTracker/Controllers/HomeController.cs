@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using BugTracker.Helpers;
 
 namespace BugTracker.Controllers
 {
@@ -14,6 +15,7 @@ namespace BugTracker.Controllers
         {
             return View();
         }
+
         [Authorize(Roles="Developer")]
         public ActionResult Notifications()
         {
