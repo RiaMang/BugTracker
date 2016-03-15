@@ -41,141 +41,142 @@
                             <h3 class="panel-title"> @Model.Title</h3>
                         </div>
 
-                        <hr />
+                        <div class="mrgn-2">
 
-                        <dl class="dl-horizontal">
-                            <dt>
-                                @Html.DisplayNameFor(model => model.Title)
-                            </dt>
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Title)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.Title)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.Title)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.Description)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Description)
+                                </dt>
 
-                            <dd>
-                                @Html.Raw(Model.Description)
-                            </dd>
+                                <dd>
+                                    @Html.Raw(Model.Description)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.Created)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Created)
+                                </dt>
 
-                            <dd>
-                                @Model.Created.DateTime.ToLongDateString()
-                            </dd>
+                                <dd>
+                                    @Model.Created.DateTime.ToLongDateString()
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.Updated)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Updated)
+                                </dt>
 
-                            <dd>
-                                @if (Model.Updated != null)
+                                <dd>
+                                    @if (Model.Updated != null)
                                 {
-                                    @Model.Updated.Value.DateTime.ToLongDateString()
+                                        @Model.Updated.Value.DateTime.ToLongDateString()
                                 }
-                            </dd>
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.AssignedToUser)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.AssignedToUser)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.OwnerUser)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.OwnerUser)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.OwnerUser.DisplayName)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.OwnerUser.DisplayName)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.Project)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.Project)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.Project.Name)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.Project.Name)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.TicketPriority)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.TicketPriority)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.TicketPriority.Name)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.TicketPriority.Name)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.TicketStatus)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.TicketStatus)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.TicketStatus.Name)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.TicketStatus.Name)
+                                </dd>
 
-                            <dt>
-                                @Html.DisplayNameFor(model => model.TicketType)
-                            </dt>
+                                <dt>
+                                    @Html.DisplayNameFor(model => model.TicketType)
+                                </dt>
 
-                            <dd>
-                                @Html.DisplayFor(model => model.TicketType.Name)
-                            </dd>
+                                <dd>
+                                    @Html.DisplayFor(model => model.TicketType.Name)
+                                </dd>
 
 
 
-                        </dl>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || Model.OwnerUserId == User.Identity.GetUserId() || Model.AssignedToUserId == User.Identity.GetUserId())
-                        {
-                            <div>
-                                <h4>Leave a comment</h4>
-                                <form role="form" action="@Url.Action("CreateComment","Tickets")" method="Post">
-                                    @Html.AntiForgeryToken()
-                                    <div class="form-group">
-                                        <input type="hidden" class="form-control" name="TicketId" value="@Model.Id" />
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="hidden" class="form-control" name="UserId" value="@User.Identity.GetUserId()" />
-                                    </div>
-                                    <div class="form-group">
-                                        <textarea class="form-control" name="Comment" rows="3"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-success">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || Model.OwnerUserId == User.Identity.GetUserId() || Model.AssignedToUserId == User.Identity.GetUserId())
-                        {
-                            <div>
-                                <h4>Add an attachment</h4>
-                                <form role="form" action="@Url.Action("CreateAttach","Tickets")" method="Post" enctype="multipart/form-data">
-                                    @Html.AntiForgeryToken()
-                                    <div class="form-group">
-                                        <input type="hidden" class="form-control" name="TicketId" value="@Model.Id" />
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="hidden" class="form-control" name="UserId" value="@User.Identity.GetUserId()" />
-                                    </div>
-                                    <div class="form-group">
-                                        <textarea class="form-control" name="Description" rows="2"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <input name="attach" type="file" id="fileupload" class="form-control" />
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-success">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        }
+                            </dl>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || Model.OwnerUserId == User.Identity.GetUserId() || Model.AssignedToUserId == User.Identity.GetUserId())
+                            {
+                                <div>
+                                    <h4>Leave a comment</h4>
+                                    <form role="form" action="@Url.Action("CreateComment","Tickets")" method="Post">
+                                        @Html.AntiForgeryToken()
+                                        <div class="form-group">
+                                            <input type="hidden" class="form-control" name="TicketId" value="@Model.Id" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" class="form-control" name="UserId" value="@User.Identity.GetUserId()" />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="Comment" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+                            @if (User.IsInRole("Admin") || User.IsInRole("Project Manager") || Model.OwnerUserId == User.Identity.GetUserId() || Model.AssignedToUserId == User.Identity.GetUserId())
+                            {
+                                <div>
+                                    <h4>Add an attachment</h4>
+                                    <form role="form" action="@Url.Action("CreateAttach","Tickets")" method="Post" enctype="multipart/form-data">
+                                        @Html.AntiForgeryToken()
+                                        <div class="form-group">
+                                            <input type="hidden" class="form-control" name="TicketId" value="@Model.Id" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" class="form-control" name="UserId" value="@User.Identity.GetUserId()" />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="Description" rows="2"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <input name="attach" type="file" id="fileupload" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
                         </div>
+                      </div>
                     </div>
                         <div class="col-md-5">
                             <div class="panel panel-green margin-bottom-40">
@@ -183,8 +184,8 @@
                                     <h3 class="panel-title"> Comments</h3>
                                 </div>
 
-                                <hr />
-                                <div>
+                                
+                                <div class="mrgn-2">
                                     @foreach (var com in Model.TicketComments)
                                     {
                                         <p>Created on : @com.Created.DateTime.ToLongDateString()</p>
@@ -207,7 +208,7 @@
                                             <h3 class="panel-title"> Attachments</h3>
                                         </div>
 
-                                        <hr />
+                                        <div class="mrgn-2">
                                         @foreach (var att in Model.TicketAttachments)
                                         {
                                             <p>Created on : @att.Created.DateTime.ToLongDateString()</p>
@@ -229,6 +230,7 @@
                                             </p>
                                             <br />
                                         }
+                                        </div>
                                       </div>
 
                                     </div>
@@ -244,7 +246,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"> History</h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body mrgn-2">
                     <table class="table">
                         <thead>
                             <tr>
@@ -280,7 +282,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"> Notifications</h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body mrgn-2">
                     <table class="table">
                         <thead>
                             <tr>

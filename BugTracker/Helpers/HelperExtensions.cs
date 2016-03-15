@@ -72,7 +72,7 @@ namespace BugTracker.Helpers
             context.Set<T>().Attach(item);
             foreach (var propertyName in changedPropertyNames)
             {
-                // If we can't find the property, this line wil throw an exception, 
+                // If we can't find the property, this line will throw an exception, 
                 //which is good as we want to know about it
                 context.Entry(item).Property(propertyName).IsModified = true;
             }

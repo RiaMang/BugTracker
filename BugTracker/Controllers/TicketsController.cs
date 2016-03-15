@@ -590,7 +590,7 @@ namespace BugTracker.Models
                         mailer.SendAsync(item.Notification);
                 }
 
-                db.Update(ticket, editable.ToArray());
+                db.Update(ticket, editable.ToArray()); // "Title", "Description", "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId", "ProjectId"
                 db.SaveChanges();
 
                 return RedirectToAction("Details",new {id= ticket.Id });

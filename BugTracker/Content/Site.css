@@ -14,6 +14,7 @@
 */
 .dl-horizontal dt {
     white-space: normal;
+    text-align: left;
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
@@ -21,4 +22,16 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.mrgn-1 {
+    margin: 1em;
+}
+
+.mrgn-2 {
+    margin: 2em;
+}
+
+.mrgn-bt-half {
+    margin-bottom: .5em;
 }
