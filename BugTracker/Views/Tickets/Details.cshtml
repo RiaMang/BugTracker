@@ -217,7 +217,9 @@
                                             <p>
                                                 @if (att.FileUrl != null)
                                                 {
-                                                    <img class="img-responsive" src="@att.FileUrl" alt="">
+                                                    @*<img class="img-responsive" src="@att.FileUrl" alt="">*@
+                                                    
+                                                    <a href="@att.FileUrl" target="_blank" download="NewFileName">View Attachment</a>
                                                     <hr>
                                                 }
                                             </p>

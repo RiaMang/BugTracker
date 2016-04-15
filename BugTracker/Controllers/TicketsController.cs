@@ -280,7 +280,7 @@ namespace BugTracker.Models
             {
                 //check the file name to make sure its an image
                 var ext = Path.GetExtension(attach.FileName).ToLower();
-                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != "gif" && ext != "bmp")
+                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != "gif" && ext != "bmp" && ext !="pdf" && ext != "txt")
                     ModelState.AddModelError("attach", "Invalid Format."); // throw an error
             }
             if (ModelState.IsValid)

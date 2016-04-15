@@ -35,3 +35,24 @@ textarea {
 .mrgn-bt-half {
     margin-bottom: .5em;
 }
+
+.brdr
+{
+    padding: 5em;
+}
+
+.cntr{
+    margin-left: 50%;
+    margin-top: 50%;
+}
+
+.rel{
+    position: relative;
+   
+}
+
+.abs{
+    position: absolute;
+    top: 4em;
+    left: 4em;
+}
