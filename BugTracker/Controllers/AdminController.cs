@@ -18,7 +18,16 @@ namespace BugTracker.Controllers
         // GET: Admin
         public ActionResult Users()
         {
-            return View(db.Users.ToList());
+            var users = new List<UsersViewModel>();
+            UserRolesHelper helper = new UserRolesHelper();
+            foreach (var user in db.Users)
+            {
+                var uservm = new UsersViewModel();
+                uservm.User = user;
+                uservm.Roles = helper.ListUserRoles(user.Id).ToList();
+                users.Add(uservm);
+            }
+            return View(users);
         }
 
         // GET: List Tickets

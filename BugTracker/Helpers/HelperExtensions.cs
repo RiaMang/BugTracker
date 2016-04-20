@@ -35,7 +35,7 @@ namespace BugTracker.Helpers
                 return null;
             }
         }
-
+        
         public static ICollection<Ticket> ListTicketsForUser(this ApplicationUser user)
         {
             var projects = user.Projects.ToList();

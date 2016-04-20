@@ -227,6 +227,7 @@
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Models\ProjectUsersViewModel.cs" />
     <Compile Include="Models\ProjUserViewModel.cs" />
+    <Compile Include="Models\UsersViewModel.cs" />
     <Compile Include="MVC Datatables\Column.cs" />
     <Compile Include="MVC Datatables\ColumnCollection.cs" />
     <Compile Include="MVC Datatables\DataTablesBinder.cs" />
