@@ -75,7 +75,7 @@ namespace BugTracker.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, false, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -91,7 +91,59 @@ namespace BugTracker.Controllers
                     return View(model);
             }
         }
+        [AllowAnonymous]
+        public async Task<ActionResult> GuestLogin(string returnUrl, string type)
+        {
+            
+            string Email = "";
+            string Password = "";
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            //if(type == "Admin")
+            //{
+            //    Email = "admin@manglani.com";
+            //    Password = "AdminPass-1";
+            //}
 
+            switch (type)
+            {
+                case "Admin":
+                    Email = "admin@manglani.com";
+                    Password = "GuestAdmin-1";
+                    break;
+                case "Project Manager":
+                    Email = "manager@manglani.com";
+                    Password = "GuestPM-1";
+                    break;
+                case "Developer":
+                    Email = "developer@manglani.com";
+                    Password = "GuestDev-1";
+                    break;
+                case "Submitter":
+                    Email = "sumitter@manglani.com";
+                    Password = "GuestSubmitter-1";
+                    break;
+                default :
+                    Email = "sumitter@manglani.com";
+                    Password = "GuestSubmitter-1";
+                    break;
+            }
+            var result = await SignInManager.PasswordSignInAsync(Email, Password, false, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToAction("Index", "Tickets");
+                //return RedirectToLocal(returnUrl);
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return RedirectToAction("Login");
+            }
+        }
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]

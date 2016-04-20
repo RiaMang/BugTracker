@@ -50,8 +50,10 @@
                         </p>
                 } 
 
-                @Html.ActionLink("Login As Guest", "Login", new {ReturnUrl = ViewBag.ReturnUrl, Email = "guest@coderfoundry.com", Password = "Password-1" })
-                
+                @Html.ActionLink("Login As Guest Admin", "GuestLogin", new {ReturnUrl = ViewBag.ReturnUrl, type="Admin" })
+                @Html.ActionLink("Login As Guest Project Manager", "GuestLogin", new { ReturnUrl = ViewBag.ReturnUrl, type = "Project Manager" })
+                @Html.ActionLink("Login As Guest Developer", "GuestLogin", new { ReturnUrl = ViewBag.ReturnUrl, type = "Developer" })
+                @Html.ActionLink("Login As Guest Submitter", "GuestLogin", new { ReturnUrl = ViewBag.ReturnUrl, type = "Submitter" })
     
     
                 @*@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))

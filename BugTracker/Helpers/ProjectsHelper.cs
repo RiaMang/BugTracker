@@ -39,7 +39,6 @@ namespace BugTracker.Helpers
                 db.Users.Attach(newUser);
                 db.Entry(newUser).State = System.Data.Entity.EntityState.Unchanged;
                 proj.Users.Add(newUser);
-
                 db.SaveChanges();
             }
 
