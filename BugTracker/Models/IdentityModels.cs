@@ -13,7 +13,6 @@ namespace BugTracker.Models
         public ApplicationUser()
         {
             this.Projects = new HashSet<Project>();
-            //this.TicketsOwned = new HashSet<TicketsOwned>();
             this.AssignedTickets = new HashSet<Ticket>();
 
         }
@@ -21,12 +20,12 @@ namespace BugTracker.Models
         public string LastName { get; set; }
         public string DisplayName { get; set; }
 
-
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
+            userIdentity.AddClaim(new Claim("Name",DisplayName));
             return userIdentity;
         }
         public virtual ICollection<Project> Projects { get; set; }
@@ -37,20 +36,21 @@ namespace BugTracker.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        //public ApplicationDbContext()
-        //    : base("DefaultConnection", throwIfV1Schema: false)
-        //{
-        //}
-
         public ApplicationDbContext()
-            : base("AzureConnection", throwIfV1Schema: false)
+            : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
+
+        //public ApplicationDbContext()
+        //    : base("AzureConnection", throwIfV1Schema: false)
+        //{
+        //}
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
@@ -60,5 +60,6 @@ namespace BugTracker.Models
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+
     }
 }

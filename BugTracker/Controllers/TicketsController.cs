@@ -280,7 +280,7 @@ namespace BugTracker.Models
             {
                 //check the file name to make sure its an image
                 var ext = Path.GetExtension(attach.FileName).ToLower();
-                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != "gif" && ext != "bmp")
+                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != "gif" && ext != "bmp" && ext !="pdf" && ext != "txt")
                     ModelState.AddModelError("attach", "Invalid Format."); // throw an error
             }
             if (ModelState.IsValid)
@@ -377,7 +377,7 @@ namespace BugTracker.Models
             }
             //TempData["tic"] = ticket;
             UserRolesHelper urh = new UserRolesHelper();
-            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "DisplayName", ticket.AssignedToUserId);
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer").Where(u=>u.Projects.Any(p=>p.Id == ticket.ProjectId)), "Id", "DisplayName", ticket.AssignedToUserId);
             return View(ticket);
         }
 
@@ -395,7 +395,7 @@ namespace BugTracker.Models
                 return HttpNotFound();
             }
             UserRolesHelper urh = new UserRolesHelper();
-            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "DisplayName", ticket.AssignedToUserId);
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer").Where(u => u.Projects.Any(p => p.Id == ticket.ProjectId)), "Id", "DisplayName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
@@ -412,165 +412,265 @@ namespace BugTracker.Models
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,ProjectId,TicketStatusId,TicketPriorityId,TicketTypeId,OwnerUserId,AssignedToUserId")] Ticket ticket)
         {
+            //if (ModelState.IsValid)
+            //{
+            //    //Ticket oldTic = db.Tickets.Find(ticket.Id);
+            //    //Ticket oldTic = (Ticket)TempData["tic"];
+
+            //     var oldTic = (from t in db.Tickets.AsNoTracking()
+            //      where t.Id == ticket.Id
+            //      select t).FirstOrDefault(); // same as
+
+            //     // var oldTic = db.Tickets.AsNoTracking().FirstOrDefault(t=>t.t.Id == ticket.Id);
+
+
+            //    string userid = User.Identity.GetUserId();
+            //    var changed = System.DateTimeOffset.Now;
+
+
+            //    var editId = Guid.NewGuid().ToString(); // store in db as string and then group by - will return list of lists
+            //    // key value pairs - key is edit id and value is the list.
+
+            //    if (ticket.AssignedToUserId != null && ticket.TicketStatusId == 1)
+            //    {
+            //        ticket.TicketStatusId = 2;
+
+            //    }
+            //    if(oldTic.Title != ticket.Title)
+            //    {
+            //        TicketHistory th1 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "Title",
+            //            OldValue = oldTic.Title,
+            //            NewValue = ticket.Title,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+            //        db.TicketHistories.Add(th1);
+            //    }
+            //    if (oldTic.Description != ticket.Description)
+            //    {
+            //        TicketHistory th2 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "Description",
+            //            OldValue = oldTic.Description,
+            //            NewValue = ticket.Description,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+            //        db.TicketHistories.Add(th2);
+            //    }
+
+            //    if (oldTic.ProjectId != ticket.ProjectId)
+            //    {
+
+            //        TicketHistory th3 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "Project",
+            //            OldValue = db.Projects.Find(oldTic.ProjectId).Name,
+            //            NewValue = db.Projects.Find(ticket.ProjectId).Name,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+            //        db.TicketHistories.Add(th3);
+            //    }
+
+            //    if (oldTic.TicketStatusId != ticket.TicketStatusId)
+            //    {
+            //        TicketHistory th4 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "TicketStatus",
+            //            OldValue = db.TicketStatuses.Find(oldTic.TicketStatusId).Name,
+            //            NewValue = db.TicketStatuses.Find(ticket.TicketStatusId).Name,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+            //        db.TicketHistories.Add(th4);
+            //    }
+
+            //    if (oldTic.TicketPriorityId != ticket.TicketPriorityId)
+            //    {
+            //        ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
+            //        TicketHistory th5 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "TicketPriority",
+            //            OldValue = db.TicketPriorities.Find(oldTic.TicketPriorityId).Name,
+            //            NewValue = db.TicketPriorities.Find(ticket.TicketPriorityId).Name,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+            //        Notification note = new Notification
+            //        {
+            //            TicketId = ticket.Id,
+            //            UserId = user.Id,
+            //            Change = "Priority",
+            //            Details = th5.NewValue,
+            //            DateNotified = changed,
+            //        };
+            //        db.Notifications.Add(note);
+            //        //user.SendNotification(note);
+            //        db.TicketHistories.Add(th5);
+            //    }
+
+            //    if (oldTic.TicketTypeId != ticket.TicketTypeId)
+            //    {
+            //        TicketHistory th6 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "TicketType",
+            //            OldValue = db.TicketTypes.Find(oldTic.TicketTypeId).Name,
+            //            NewValue = db.TicketTypes.Find(ticket.TicketTypeId).Name,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+            //        db.TicketHistories.Add(th6);
+            //    }
+
+            //    if (oldTic.AssignedToUserId != ticket.AssignedToUserId)
+            //    {
+            //        ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
+            //        TicketHistory th7 = new TicketHistory
+            //        {
+            //            TicketId = ticket.Id,
+            //            Property = "AssignedToUser",
+            //            OldValue = oldTic.AssignedToUserId == null ? "" : db.Users.Find(oldTic.AssignedToUserId).DisplayName,
+            //            NewValue = user.DisplayName,
+            //            EditId = editId,
+            //            Changed = changed,
+            //            UserId = userid
+            //        };
+
+            //        Notification note = new Notification { TicketId = ticket.Id, UserId = user.Id, Change="Assigned", 
+            //            Details=user.DisplayName, DateNotified=changed};
+            //        db.Notifications.Add(note);
+            //        //user.SendNotification(note);
+            //        db.TicketHistories.Add(th7);
+            //    }
+
+            //    ticket.Updated = System.DateTimeOffset.Now;
+            //    db.Entry(ticket).State = EntityState.Modified;
+            //    db.SaveChanges();
+            //    return RedirectToAction("Details", new {id = ticket.Id });
+            //}
+
+            var editable = new List<string>() { "Title", "Description", "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId", "ProjectId" };
+            //if (User.IsInRole("Admin"))
+            //    editable.Add("ProjectId");
+            //if (User.IsInRole("Project Manager"))
+            //    editable.AddRange(new string[] { "AssignedUserId", "TypeId", "PriorityId", "StatusId" });
+
             if (ModelState.IsValid)
             {
-                //Ticket oldTic = db.Tickets.Find(ticket.Id);
-                //Ticket oldTic = (Ticket)TempData["tic"];
-                
-                 var oldTic = (from t in db.Tickets.AsNoTracking()
-                  where t.Id == ticket.Id
-                  select t).FirstOrDefault(); // same as
-                 
-                 /* var oldTic = db.Tickets.AsNoTracking().FirstOrDefault(t=>t.t.Id == ticket.Id);
-                 * */
-
                 string userid = User.Identity.GetUserId();
                 var changed = System.DateTimeOffset.Now;
-                
+                var editId = Guid.NewGuid().ToString();
 
-                var editId = Guid.NewGuid().ToString(); // store in db as string and then group by - will return list of lists
-                // key value pairs - key is edit id and value is the list.
-                
-                if (ticket.AssignedToUserId != null && ticket.TicketStatusId == 1)
+                var oldTicket = db.Tickets.AsNoTracking()
+                    .FirstOrDefault(t => t.Id == ticket.Id);
+                var histories = GetTicketHistories(oldTicket, ticket,userid, changed, editId)
+                    .Where(h => editable.Contains(h.History.Property));
+
+                var mailer = new EmailService();
+
+                foreach (var item in histories)
                 {
-                    ticket.TicketStatusId = 2;
-                    
-                }
-                if(oldTic.Title != ticket.Title)
-                {
-                    TicketHistory th1 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "Title",
-                        OldValue = oldTic.Title,
-                        NewValue = ticket.Title,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    db.TicketHistories.Add(th1);
-                }
-                if (oldTic.Description != ticket.Description)
-                {
-                    TicketHistory th2 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "Description",
-                        OldValue = oldTic.Description,
-                        NewValue = ticket.Description,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    db.TicketHistories.Add(th2);
+                    db.TicketHistories.Add(item.History);
+                    if (item.Notification != null)
+                        mailer.SendAsync(item.Notification);
                 }
 
-                if (oldTic.ProjectId != ticket.ProjectId)
-                {
-                    
-                    TicketHistory th3 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "Project",
-                        OldValue = db.Projects.Find(oldTic.ProjectId).Name,
-                        NewValue = db.Projects.Find(ticket.ProjectId).Name,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    db.TicketHistories.Add(th3);
-                }
-
-                if (oldTic.TicketStatusId != ticket.TicketStatusId)
-                {
-                    TicketHistory th4 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "TicketStatus",
-                        OldValue = db.TicketStatuses.Find(oldTic.TicketStatusId).Name,
-                        NewValue = db.TicketStatuses.Find(ticket.TicketStatusId).Name,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    db.TicketHistories.Add(th4);
-                }
-
-                if (oldTic.TicketPriorityId != ticket.TicketPriorityId)
-                {
-                    ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
-                    TicketHistory th5 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "TicketPriority",
-                        OldValue = db.TicketPriorities.Find(oldTic.TicketPriorityId).Name,
-                        NewValue = db.TicketPriorities.Find(ticket.TicketPriorityId).Name,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    Notification note = new Notification
-                    {
-                        TicketId = ticket.Id,
-                        UserId = user.Id,
-                        Change = "Priority",
-                        Details = th5.NewValue,
-                        DateNotified = changed,
-                    };
-                    db.Notifications.Add(note);
-                    //user.SendNotification(note);
-                    db.TicketHistories.Add(th5);
-                }
-
-                if (oldTic.TicketTypeId != ticket.TicketTypeId)
-                {
-                    TicketHistory th6 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "TicketType",
-                        OldValue = db.TicketTypes.Find(oldTic.TicketTypeId).Name,
-                        NewValue = db.TicketTypes.Find(ticket.TicketTypeId).Name,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    db.TicketHistories.Add(th6);
-                }
-
-                if (oldTic.AssignedToUserId != ticket.AssignedToUserId)
-                {
-                    ApplicationUser user = db.Users.Find(ticket.AssignedToUserId);
-                    TicketHistory th7 = new TicketHistory
-                    {
-                        TicketId = ticket.Id,
-                        Property = "AssignedToUser",
-                        OldValue = oldTic.AssignedToUserId == null ? "" : db.Users.Find(oldTic.AssignedToUserId).DisplayName,
-                        NewValue = user.DisplayName,
-                        EditId = editId,
-                        Changed = changed,
-                        UserId = userid
-                    };
-                    
-                    Notification note = new Notification { TicketId = ticket.Id, UserId = user.Id, Change="Assigned", 
-                        Details=user.DisplayName, DateNotified=changed};
-                    db.Notifications.Add(note);
-                    //user.SendNotification(note);
-                    db.TicketHistories.Add(th7);
-                }
-                
-                ticket.Updated = System.DateTimeOffset.Now;
-                db.Entry(ticket).State = EntityState.Modified;
+                db.Update(ticket, editable.ToArray()); // "Title", "Description", "AssignedToUserId", "TicketTypeId", "TicketPriorityId", "TicketStatusId", "ProjectId"
                 db.SaveChanges();
-                return RedirectToAction("Details", new {id = ticket.Id });
+
+                return RedirectToAction("Details",new {id= ticket.Id });
             }
             UserRolesHelper urh = new UserRolesHelper();
-            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer"), "Id", "FirstName", ticket.AssignedToUserId);
+            ViewBag.AssignedToUserId = new SelectList(urh.UsersInRole("Developer").Where(u => u.Projects.Any(p => p.Id == ticket.ProjectId)), "Id", "FirstName", ticket.AssignedToUserId);
             ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
+        }
+
+        private List<TicketHistoryWithNotification> GetTicketHistories(Ticket oldTicket, Ticket newTicket, string userid, DateTimeOffset changed, string editId)
+        {
+            var histories = new List<TicketHistoryWithNotification>();
+            if (oldTicket.AssignedToUserId != newTicket.AssignedToUserId)
+            {
+                var newUser = db.Users.Find(newTicket.AssignedToUserId);
+
+                histories.Add(new TicketHistoryWithNotification()
+                {
+                    History = new TicketHistory()
+                    {
+                        TicketId = newTicket.Id,
+                        Property = "AssignedToUser",
+                        OldValue = oldTicket.AssignedToUserId == null ? "" : db.Users.Find(oldTicket.AssignedToUserId).DisplayName,
+                        NewValue = newUser?.UserName,
+                        EditId = editId,
+                        Changed = changed,
+                        UserId = userid
+
+                    },
+                    Notification = newUser != null ? new IdentityMessage()
+                    {
+                        Subject = "You have a new Notification",
+                        Destination = newUser.Email,
+                        Body = "You have been assigned to a new ticket with Id " + newTicket.Id + "!"
+                    } : null
+                });
+            }
+            if (oldTicket.Description != newTicket.Description)
+                histories.Add(new TicketHistoryWithNotification()
+                {
+                    History = new TicketHistory()
+                    {
+                        TicketId = newTicket.Id,
+                        Property = "Description",
+                        OldValue = oldTicket.Description,
+                        NewValue = newTicket.Description,
+                        EditId = editId,
+                        Changed = changed,
+                        UserId = userid
+                    },
+                    Notification = null
+                });
+            if (oldTicket.TicketPriorityId != newTicket.TicketPriorityId)
+                histories.Add(new TicketHistoryWithNotification()
+                {
+                    History = new TicketHistory()
+                    {
+                        TicketId = newTicket.Id,
+                        Property = "Priority",
+                        OldValue = oldTicket.TicketPriority?.Name,
+                        NewValue = db.TicketPriorities.Find(newTicket.TicketPriorityId)?.Name,
+                        EditId = editId,
+                        Changed = changed,
+                        UserId = userid
+                    },
+                    Notification = null
+                });
+
+            return histories;
+        }
+
+        private class TicketHistoryWithNotification
+        {
+            public TicketHistory History { get; set; }
+            public IdentityMessage Notification { get; set; }
         }
 
         // GET: Tickets/Delete/5

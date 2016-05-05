@@ -1,15 +1,31 @@
 ﻿@using BugTracker.Models
 @using Microsoft.AspNet.Identity
 
-            
-            
-
 @{
     ViewBag.Title = "Home Page";
 }
 <div class="container">
-    <h2> Welcome to Bug Tracker - Your Project Issues Manager.</h2>
-    <img style="margin :100px 200px" src="~/assets/img/bug.jpg" alt="Issue Tracker">
+    <h2> Welcome to Issue Manager - Your Bug Tracking System.</h2>
+    <div class="brdr">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="rel"> <!--Style="display: flex;"-->
+                    <img class="abs" src="~/assets/img/bug.jpg" alt="Issue Tracker"> <!--style="margin:auto;"-->
+                </div>
+            </div>
+            <div class="col-md-7">
+                <p>
+                    <h3>
+                        The Issue Manager helps you track issues in your projects. This system has 4 roles that can be assigned
+                        to a user. 'Admin' role has the most permisions, 'Project manager' has most permissions for his projects only.
+                        The 'Developer' can view tickets for his projects but edit only the tickets that he is assigned to, and a
+                        'Submitter' can create tickets and leave comments and attachments to it.  
+                        <a href="@Url.Action("Login","Account")">Log In</a> as one of these roles to check it out!
+                    </h3>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
                     
     

@@ -1,6 +1,4 @@
-﻿@*@using PagedList
-@using PagedList.Mvc*@
-
+﻿
 @model List<BugTracker.Models.Ticket>
 <link rel="stylesheet" type=" text/css" href="~/assets/css/jquery.dataTables.css" />
 @{
@@ -22,125 +20,129 @@
                 <div class="panel-heading">
                     <h3 class="panel-title"> Issues</h3>
                 </div>
-                <div class="row">
-                    @if (User.IsInRole("Developer"))
+                <div class="mrgn-1">
+                    <div class="row mrgn-bt-half">
+                        @if (User.IsInRole("Developer"))
                     {
-                        <div class="col-md-4">
-                            <label>Show My Tickets: <input type="checkbox" id="myTickets" value="off" /></label>
-                        </div>
+                            <div class="col-md-4">
+                                <label>Show My Tickets: <input type="checkbox" id="myTickets" value="off" /></label>
+                            </div>
                     }
-                    @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin"))
                     {
-                        <div class="col-md-4">
-                            <label>Show Tickets After: <input type="date" id="date" /></label>
-                        </div>
+                            <div class="col-md-4">
+                                <label>Show Tickets After: <input type="date" id="date" /></label>
+                            </div>
                     }
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label>Tickets Type: @Html.DropDownList("type", new SelectList(new string[] { "All","Enhancement", "Bug", "Info Needed", "New Feature", "Requirement" }), new {@id="type" })</label>
                     </div>
-                    <div class="col-md-4">
-                        <label>Tickets Priority: @Html.DropDownList("priority", new SelectList(new string[] { "All", "Important", "Urgent", "Critical" }), new { @id = "priority" })</label>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Tickets Status: @Html.DropDownList("status", new SelectList(new string[] { "All", "Open", "Assigned", "InProgress", "Resolved" }), new { @id = "status" })</label>
-                    </div>
-                </div>
-                <table id="ticket" class="display" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>
-                                Id
-                            </th>
-                            <th>
-                                Title 
-                            </th>
-                            <th>
-                                Description
-                            </th>
-                            <th>
-                                Created 
-                            </th>
-                            <th>
-                                Updated
-                            </th>
-                            <th>
-                                AssignedTo 
-                            </th>
-                            <th>
-                                Owner 
-                            </th>
-                            <th>
-                                Project 
-                            </th>
-                            <th>
-                                Status 
-                            </th>
-                            <th>
-                                Priority
-                            </th>
-                            <th>
-                                Type
-                            </th>
-                            <th>
-                                Link
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @*@foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.AssignedToUser.FirstName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.OwnerUser.FirstName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Project.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.TicketType.Name)
-                                </td>
-                                <td>
-                                    <span style="cursor:pointer;" data-toggle="popover" data-html="true" title="@item.Title" data-content="@Html.Raw(item.Description)">
-                                        @item.Title
-                                    </span> 
-                                </td>
-                                <td>
-                                    @item.Created.DateTime.ToLongDateString()
-                                </td>
-                                <td>
-                                    @if (item.Updated != null)
-                                    {
-                                        @item.Updated.Value.DateTime.ToLongDateString()
-                                    }
-
-                                </td>
-                                <td>
-                                    @if(User.IsInRole("Admin") || User.IsInRole("Project Manager") || ViewBag.Dev == "dev")
-                                    {
-                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
-                                    }
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id })
-
-                                </td>
-                            </tr>
-                        }*@
+                    <div class="mrgn-bt-half">
+                        <div class="pull-left">
+                            <label>Tickets Type: @Html.DropDownList("type", new SelectList(new string[] { "All", "Enhancement", "Bug", "Info Needed", "New Feature", "Requirement" }), new { @id = "type" })</label>
+                        </div>
+                        <div class="pull-right">
+                            <label>Tickets Status: @Html.DropDownList("status", new SelectList(new string[] { "All", "Open", "Assigned", "InProgress", "Resolved" }), new { @id = "status" })</label>
+                        </div>
                         
+                        <div class="text-center">
+                            <label>Tickets Priority: @Html.DropDownList("priority", new SelectList(new string[] { "All", "Important", "Urgent", "Critical" }), new { @id = "priority" })</label>
+                        </div>
+                        
+                    </div>
+                    <table id="ticket" class="display" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>
+                                    Title
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Created
+                                </th>
+                                <th>
+                                    Updated
+                                </th>
+                                <th>
+                                    AssignedTo
+                                </th>
+                                <th>
+                                    Owner
+                                </th>
+                                <th>
+                                    Project
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Priority
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    Link
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*@foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AssignedToUser.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OwnerUser.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Project.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TicketType.Name)
+                            </td>
+                            <td>
+                                <span style="cursor:pointer;" data-toggle="popover" data-html="true" title="@item.Title" data-content="@Html.Raw(item.Description)">
+                                    @item.Title
+                                </span>
+                            </td>
+                            <td>
+                                @item.Created.DateTime.ToLongDateString()
+                            </td>
+                            <td>
+                                @if (item.Updated != null)
+                                {
+                                    @item.Updated.Value.DateTime.ToLongDateString()
+                                }
+
+                            </td>
+                            <td>
+                                @if(User.IsInRole("Admin") || User.IsInRole("Project Manager") || ViewBag.Dev == "dev")
+                                {
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
+                                }
+                                @Html.ActionLink("Details", "Details", new { id = item.Id })
+
+                            </td>
+                        </tr>
+                    }*@
 
 
-                    </tbody>
-                </table>
-            </div>
+
+                        </tbody>
+                    </table>
+                </div>
+             </div>
         </div>
         <!--End Hover Rows-->
         <!--------- Pager-->

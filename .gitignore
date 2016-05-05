@@ -229,5 +229,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-BugTracker/Web.config
-*.config
+private.config
+connection.config

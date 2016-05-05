@@ -39,7 +39,6 @@ namespace BugTracker.Helpers
                 db.Users.Attach(newUser);
                 db.Entry(newUser).State = System.Data.Entity.EntityState.Unchanged;
                 proj.Users.Add(newUser);
-
                 db.SaveChanges();
             }
 
@@ -121,9 +120,9 @@ namespace BugTracker.Helpers
             return db.Projects.Find(projectId).Users;
         }
 
-        public ICollection<ApplicationUser> ListProjectsForUser(string userId)
+        public ICollection<Project> ListProjectsForUser(string userId)
         {
-            return (ICollection<ApplicationUser>) db.Users.Find(userId).Projects;
+            return db.Users.Find(userId).Projects;
         }
 
         public ICollection<ApplicationUser> ListUsersNotOnProject(int projectId)

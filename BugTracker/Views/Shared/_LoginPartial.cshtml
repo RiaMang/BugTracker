@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity
-
+@using GravatarHelper.Extensions;
+@using BugTracker.Helpers;
 @if (Request.IsAuthenticated)
 {
     
@@ -8,14 +9,14 @@
         {
         @Html.AntiForgeryToken()
         <ul class="nav navbar-nav">
-            <li>@Html.ActionLink(User.Identity.GetUserName(), "UserAccount", "Account")</li>
+            @*<li>@Html.ActionLink(User.Identity.GetUserName(), "UserAccount", "Account")</li>*@
+            <li>@Html.Gravatar(User.Identity.GetUserName(), 40, new { Title = User.Identity.GetName(), Alt = "Gravatar" })</li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
 
         }
-    
 }
 else
 {

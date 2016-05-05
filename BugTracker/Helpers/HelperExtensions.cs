@@ -4,6 +4,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Web;
 
 namespace BugTracker.Helpers
@@ -20,6 +22,20 @@ namespace BugTracker.Helpers
     {
         private static ApplicationDbContext db = new ApplicationDbContext();
 
+        public static string GetName(this IIdentity user)
+        {
+            var ClaimsUser = (ClaimsIdentity)user;
+            var claim = ClaimsUser.Claims.FirstOrDefault(c => c.Type == "Name");
+            if(claim != null)
+            {
+                return claim.Value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        
         public static ICollection<Ticket> ListTicketsForUser(this ApplicationUser user)
         {
             var projects = user.Projects.ToList();
@@ -49,6 +65,18 @@ namespace BugTracker.Helpers
             };
 
             es.SendAsync(message);
+        }
+
+        public static bool Update<T>(this ApplicationDbContext db, T item, params string[] changedPropertyNames) where T : class, new()
+        {
+            db.Set<T>().Attach(item);
+            foreach (var propertyName in changedPropertyNames)
+            {
+                // If we can't find the property, this line will throw an exception, 
+                //which is good as we want to know about it
+                db.Entry(item).Property(propertyName).IsModified = true;
+            }
+            return true;
         }
 
     }

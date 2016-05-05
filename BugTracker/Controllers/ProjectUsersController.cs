@@ -32,7 +32,9 @@ namespace BugTracker.Controllers
         {
             if(ModelState.IsValid)
             {
-                if(model.SelectedUsers != null)
+                //var project = db.Projects.Find(model.projectId);
+                //project.Users.Clear();
+                if (model.SelectedUsers != null)
                 {
                     foreach(string id in model.SelectedUsers)
                     {
