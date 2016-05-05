@@ -202,7 +202,6 @@ namespace BugTracker.Controllers
             {
                Project = proj,
                 Users = selectList
-                
             };
 
             return View(model);

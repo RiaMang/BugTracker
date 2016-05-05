@@ -237,9 +237,7 @@ namespace BugTracker.Models
             }
             return View(ticket);
         }
-
         
-
         //Post Create Comments
         [HttpPost]
         [ValidateAntiForgeryToken]

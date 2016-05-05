@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using System.Web.Mvc;
 
 namespace BugTracker.Models
 {
     public class ProjUserViewModel
     {
         public Project Project { get; set; }
-        public System.Web.Mvc.MultiSelectList Users { get; set; } //populates list box
+        public MultiSelectList Users { get; set; } //populates list box
         public string[] SelectedUsers { get; set; } // receives selected users
 
     }

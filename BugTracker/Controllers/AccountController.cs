@@ -91,6 +91,7 @@ namespace BugTracker.Controllers
                     return View(model);
             }
         }
+        // Use this for all 4 Guest Logins
         [AllowAnonymous]
         public async Task<ActionResult> GuestLogin(string returnUrl, string type)
         {
@@ -120,7 +121,7 @@ namespace BugTracker.Controllers
                     Password = "GuestDev-1";
                     break;
                 case "Submitter":
-                    Email = "sumitter@manglani.com";
+                    Email = "submitter@manglani.com";
                     Password = "GuestSubmitter-1";
                     break;
                 default :
