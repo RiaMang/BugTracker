@@ -92,7 +92,7 @@ namespace BugTracker.Controllers
             }
         }
 <<<<<<< HEAD
-        // Use this for all 4 Guest Logins
+        // Use this for all 4 Guest Logins and lets see if this works
         [AllowAnonymous]
         public async Task<ActionResult> GuestLogin(string returnUrl, string type)
         {
