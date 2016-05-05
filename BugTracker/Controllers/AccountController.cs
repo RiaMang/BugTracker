@@ -312,9 +312,10 @@ namespace BugTracker.Controllers
         {
             
             ApplicationUser user = db.Users.Find(userId);
-            db.Users.Attach(user);
+            //db.Users.Attach(user);
             user.UserName = userName;
-            db.Entry(user).Property("UserName").IsModified = true;
+            user.Email = userName;
+            //db.Entry(user).Property("UserName").IsModified = true;
             db.SaveChanges();
             
             return RedirectToAction("Index","Home");
