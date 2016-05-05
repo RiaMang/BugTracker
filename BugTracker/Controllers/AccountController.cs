@@ -75,7 +75,7 @@ namespace BugTracker.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, false, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -91,6 +91,7 @@ namespace BugTracker.Controllers
                     return View(model);
             }
         }
+<<<<<<< HEAD
         // Use this for all 4 Guest Logins
         [AllowAnonymous]
         public async Task<ActionResult> GuestLogin(string returnUrl, string type)
@@ -145,6 +146,9 @@ namespace BugTracker.Controllers
                     return RedirectToAction("Login");
             }
         }
+=======
+
+>>>>>>> origin/master
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -365,12 +369,10 @@ namespace BugTracker.Controllers
         {
             
             ApplicationUser user = db.Users.Find(userId);
-            db.Users.Attach(user);
+            //db.Users.Attach(user);
             user.UserName = userName;
             user.Email = userName;
-            db.Entry(user).Property("UserName").IsModified = true;
-            db.Entry(user).Property("Email").IsModified = true;
-
+            //db.Entry(user).Property("UserName").IsModified = true;
             db.SaveChanges();
             
             return RedirectToAction("Index","Home");
